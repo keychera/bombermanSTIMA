@@ -2,13 +2,12 @@
 //
 
 #include "stdafx.h"
-#include <random>
 using namespace std;
 
 void readStateFile(string filePath);
 void writeMoveFile(string filePath);
 
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain(int argc, char* argv[])
 {
 	string filePath = argv[2];
 
@@ -44,7 +43,7 @@ void writeMoveFile(string filePath)
 
 	if (outfile.is_open())
 	{
-		int outmove = 1;
+		int outmove = 2;
 		outfile << outmove << std::endl;
 		outfile.close();
 	}

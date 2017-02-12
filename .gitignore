@@ -3,3 +3,14 @@
 ################################################################################
 
 /SampleBot.VC.VC.opendb
+/SampleBot.VC.db
+/.vs/SampleBot/v14
+/Release/SampleBot.tlog
+/Release/vc140.pdb
+/Release/stdafx.obj
+/Release/SampleBot.pdb
+/Release/SampleBot.pch
+/Release/SampleBot.obj
+/Release/SampleBot.log
+/Release/SampleBot.ipdb
+/Release/SampleBot.iobj
