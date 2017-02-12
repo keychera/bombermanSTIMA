@@ -7,7 +7,7 @@ using namespace std;
 void readStateFile(string filePath);
 void writeMoveFile(string filePath);
 
-int _tmain(int argc, char* argv[])
+int _tmain(int argc, _TCHAR* argv[])
 {
 	string filePath = argv[2];
 
@@ -16,6 +16,7 @@ int _tmain(int argc, char* argv[])
 	cout << "File Path: " << argv[2] << std::endl;
 
 	readStateFile(filePath);
+	//Strategy():
 	writeMoveFile(filePath);
 	return 0;
 }
@@ -43,8 +44,7 @@ void writeMoveFile(string filePath)
 
 	if (outfile.is_open())
 	{
-		int outmove = 2;
-		outfile << outmove << std::endl;
+		outfile << '5' << std::endl;
 		outfile.close();
 	}
 }
