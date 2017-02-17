@@ -5,9 +5,10 @@
 using json = nlohmann::json;
 using namespace std;
 
-//void readStateFile(string filePath);
-//void writeMoveFile(string filePath);
+void readStateFile(string filePath);
+void writeMoveFile(string filePath);
 
+/* json tester
 int main() {
 	json j;
 	ifstream infile("../state.json");
@@ -23,8 +24,8 @@ int main() {
 	cin >> i;
 	return 0;
 }
+*/
 
-/*
 int _tmain(int argc, _TCHAR* argv[])
 {
 	string filePath = argv[2];
@@ -32,6 +33,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Args: " << argc << std::endl;
 	cout << "Player Key: " << argv[1] << std::endl;
 	cout << "File Path: " << argv[2] << std::endl;
+
 
 
 	readStateFile(filePath);
@@ -67,4 +69,3 @@ void writeMoveFile(string filePath)
 		outfile.close();
 	}
 }
-*/
