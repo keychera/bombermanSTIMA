@@ -15,11 +15,12 @@ int main() {
 	infile >> j;
 	string v = "John";
 	cout << "hey" << endl;
-	cout << (v == jason(j,player,1,Name)) << endl;
-	cout << v;
-	cout << jason(j, player, 1, Key) << endl;
-	cout << jason(j, player, 0, Name) << endl;
-	cout << jason(j, player, 1, BombBag) << endl;
+	cout << (v == player(j,1,Name)) << endl;
+	cout << v << endl;
+	cout << player(j, 1, Key) << endl;
+	cout << playerX(j,0) << endl;
+	cout << playerY(j, 1) << endl;
+	cout << (block(j, 0, 0, PowerUp) == IndestructibleWall) << endl;
 	int i;
 	cin >> i;
 	return 0;
