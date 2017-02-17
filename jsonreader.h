@@ -4,5 +4,8 @@
 
 #include "json.hpp"
 
-#end
+#define jason(j,player,i,...) (j)["RegisteredPlayerEntities"][(i)][#__VA_ARGS__]
+
+
+#endif
 
