@@ -1,6 +1,7 @@
 // SampleBot.cpp : Defines the entry point for the console application.
 //
 
+#include "jsonreader.h"
 #include "stdafx.h"
 using namespace std;
 
