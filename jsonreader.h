@@ -34,7 +34,7 @@
 	BombRadius	- Radius bomb per cell
 	Location  //Use playerX & playerY instead of this
 */
-#define player(j,i,...) (j)["RegisteredPlayerEntities"][(i)][#__VA_ARGS__] 
+#define player(j,i,...) (j)["RegisteredPlayerEntities"][(i)][#__VA_ARGS__]
 #define playerX(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["X"]
 #define playerY(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["Y"]
 

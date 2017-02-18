@@ -1,23 +1,29 @@
 #pragma once
+#ifndef ENTITY_H
+#define ENTITY_H
 
-class Entity {
+#include <string>
+
+class EntityID {
 public:
 	/*!
 	@brief default constructor
 	*/
-	Entity();
+	EntityID();
 	/*!
 	@brief constructor
 	*/
-	Entity(string n, int x, int y);
+	EntityID(std::string n, int x, int y);
 
 	/*!
 	@brief entity setter
 	*/
-	Set(string n, int x, int y);
+	void Set(std::string n, int x, int y);
 
 private:
-	string type;
+	std::string id;
 	int x;
 	int y;
 };
+
+#endif // !
