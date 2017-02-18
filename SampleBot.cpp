@@ -42,17 +42,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	json j;
 	readStateFile(filePath, j);
 
-	int xy = (j)["MapWidth"].get<int>();
-
 	string PlayerKey = argv[1];
 
-	Detect d(PlayerKey, j);
+	Detect d(PlayerKey, j,5);
 	EntityID target = strategize(d, j);
 	if (target.GetID() != "null") {
-		if (target.GetID() != "Bomb")
-			move = Strategy(d, target.GetX(), target.GetY(), j);
-		else
-			move = 5;
+		move = Strategy(d, target.GetX(), target.GetY(), j);
 	}
 	writeMoveFile(filePath,move);
 	return 0;
@@ -67,6 +62,7 @@ void readStateFile(string filePath,json& j)
 	if (myfile.is_open())
 	{
 		myfile >> j;
+		myfile.close();
 	}
 }
 
@@ -146,11 +142,10 @@ EntityID strategize(Detect & d,json & j)
 {
 	int xCenter = mapX(j) / 2;
 	int yCenter = mapY(j) / 2;
-	EntityID eOut("Center", xCenter, yCenter);
-	if (d.IsSafe()) {
+	EntityID eOut("Center", xCenter, yCenter);	
+	/*//if (d.IsSafe()) {
 		string mark = d.IsAroundSafe();
-		d.DetectAround(3);
-		if (d.IsDestructibleAdjacent() && d.IsEscapePossible()){
+		if (d.IsDestructibleAdjacent()){
 			eOut.Set("Bomb", 0, 0);
 		}
 		else {
@@ -165,8 +160,8 @@ EntityID strategize(Detect & d,json & j)
 				}
 			}
 		}
-	} else {
-		eOut.Set("MoveToSafety", 0, 0);
-	}
+	//} else {
+		//eOut.Set("MoveToSafety", xCenter, 0);
+	//}*/
 	return eOut;
 }

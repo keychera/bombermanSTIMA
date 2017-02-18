@@ -11,9 +11,14 @@ public:
 	*/
 	EntityID();
 	/*!
-	@brief constructor
+	@brief constructor without radius
 	*/
-	EntityID(std::string n, int _x, int _y);
+	EntityID(std::string n, int _x, int _y );
+	/*!
+	@brief constructor with radius
+	*/
+	EntityID(std::string n, int _x, int _y,int r);
+	
 
 	/*!
 	@brief copy constructor
@@ -26,9 +31,14 @@ public:
 	EntityID& operator=(const EntityID&);
 
 	/*!
-	@brief entity setter
+	@brief entity setter without radius
 	*/
 	void Set(std::string n, int _x, int _y);
+
+	/*!
+	@brief entity setter with radius
+	*/
+	void Set(std::string n, int _x, int _y,int r);
 
 	std::string GetID();
 
@@ -36,10 +46,13 @@ public:
 
 	int GetY();
 
+	int GetRadius();
+
 private:
 	std::string id;
 	int x;
 	int y;
+	int BombRadius;
 };
 
 #endif // !

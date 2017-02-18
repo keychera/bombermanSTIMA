@@ -2,83 +2,74 @@
 using namespace std;
 using json = nlohmann::json;
 
+Detect::Detect(std::string key, nlohmann::json _j,int n) {
+	j = _j;
+	int i = 0;
+	while (player(j, i, Key).get<std::string>() != key)
+		i++;
+	x = playerX(j, i);
+	y = playerY(j, i);
+	radius = player(j, i, BombRadius).get<int>();
+	bag = player(j, i, BombBag).get<int>();
+	//int n = mapX(j) / 2;
+	int size = (n*n + ((n - 1)*(n - 1)));
+	detectionArea = size;
+	e = new EntityID[size];
+	int idx = 0;
+	for (i = -n; i <= n; i++) {
+		for (int k = -n + abs(i); k < n - abs(i); k++) {
+			if (((x + i) > 1) && ((x + i) < mapX(j)) && ((y + k) > 1) && ((x + i) < mapY(j))) {
+				if (haveBomb(j, i, k)) {
+					string id = Bomb;
+					int radius = bRadius(j, i, k);
+					e[idx].Set(id, x + i, y + k,radius);
+				}
+				else {
+					string id = (block(j, x + i, y + k, Entity) != "null") ?
+						block(j, i, k, Entity) : block(j, i, k, PowerUp);
+					e[idx].Set(id, x + i, y + k);
+				}
+			}
+			idx++;
+		}
+	}
+	detectionRadius = n;
+}
+
 Detect::~Detect()
 {
-	if (detectionDone)
-		delete e;
+	delete [] e;
 }
 
 bool Detect::IsSafe()
 {
-	
-	int xSize = mapX(j);
-	int ySize = mapY(j);
-
 	bool safe = true;
-	bool trulySafe = false;
 	
 	//to the right
-	int i = x, k = y;
-	while ((safe) && (!trulySafe) && (i <= xSize)) {
-		trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
-		if (!trulySafe) {
-			if (haveBomb(j, i, k)) {
-				int radius = bRadius(j, i, k);
-				safe = (radius < abs(i - x));
-			}
+	int i = 0;
+	bool VerticalSafe = false, HorizontalSafe = false;
+	while (i < detectionArea) {
+		if (e[i].GetID() == IndestructibleWall) {
+			HorizontalSafe = ((abs(e[i].GetX() - x) - 1 )== 0);
+			VerticalSafe = ((abs(e[i].GetY() - y) - 1) == 0);
 		}
 		i++;
 	}
-	if (safe) {
 
-		//to the left
-		bool trulySafe = false;
-		int i = x, k = y;
-		while ((safe) && (!trulySafe) && (i <= xSize)) {
-			trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
-			if (!trulySafe) {
-				if (haveBomb(j, i, k)) {
-					int radius = bRadius(j, i, k);
-					safe = (radius < abs(i - x));
+	i = 0;
+	while ((safe) && (i < detectionArea)) {
+		if (e[i].GetID() == Bomb) {
+			if (!VerticalSafe)
+				if (e[i].GetX() == x) {
+					safe = !(abs(e[i].GetY() - y) < e[i].GetRadius());
 				}
-			}
-			i--;
-
-		}
-		if (safe) {
-
-			//upward
-			bool trulySafe = false;
-			int i = x, k = y;
-			while ((safe) && (!trulySafe) && (i <= xSize)) {
-				trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
-				if (!trulySafe) {
-					if (haveBomb(j, i, k)) {
-						int radius = bRadius(j, i, k);
-						safe = (radius < abs(k - y));
+			if (safe)
+				if (!HorizontalSafe)
+					if (e[i].GetY() == y){
+						safe = !(abs(e[i].GetX() - x) < e[i].GetRadius());
 					}
-				}
-			}
-			k++;
-
-			if (safe) {
-
-				//downward
-				bool trulySafe = false;
-				int i = x, k = y;
-				while ((safe) && (!trulySafe) && (i <= xSize)) {
-					trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
-					if (!trulySafe) {
-						if (haveBomb(j, i, k)) {
-							int radius = bRadius(j, i, k);
-							safe = (radius < abs(k - y));
-						}
-					}
-					k--;
-
-				}
-			}
 		}
+		if (safe) i++;
 	}
 
 	return safe;
@@ -87,75 +78,35 @@ bool Detect::IsSafe()
 
 bool Detect::IsSafe(int _x, int _y)
 {
-	int xSize = mapX(j);
-	int ySize = mapY(j);
-
 	bool safe = true;
-	bool trulySafe = false;
-	
+
 	//to the right
-	int i = _x, k = _y;
-	while ((safe) && (!trulySafe) && (i <= xSize)) {
-		trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
-		if (!trulySafe) {
-			if (haveBomb(j, i, k)) {
-				int radius = bRadius(j, i, k);
-				safe = (radius < abs(i - _x));
-			}
+	int i = 0;
+	bool VerticalSafe = false, HorizontalSafe = false;
+	while (i < detectionArea) {
+		if (e[i].GetID() == IndestructibleWall) {
+			HorizontalSafe = ((abs(e[i].GetX() -_x) - 1) == 0);
+			VerticalSafe = ((abs(e[i].GetY() - _y) - 1) == 0);
 		}
 		i++;
 	}
-	if (safe) {
 
-		//to the left
-		bool trulySafe = false;
-		int i = _x, k = _y;
-		while ((safe) && (!trulySafe) && (i <= xSize)) {
-			trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
-			if (!trulySafe) {
-				if (haveBomb(j, i, k)) {
-					int radius = bRadius(j, i, k);
-					safe = (radius < abs(i - _x));
+	i = 0;
+	while ((safe) && (i < detectionArea)) {
+		if (e[i].GetID() == Bomb) {
+			if (!VerticalSafe)
+				if (e[i].GetX() == _x) {
+					safe = !(abs(e[i].GetY() - _y) < e[i].GetRadius());
 				}
-			}
-			i--;
-
-		}
-		if (safe) {
-
-			//upward
-			bool trulySafe = false;
-			int i = _x, k = _y;
-			while ((safe) && (!trulySafe) && (i <= xSize)) {
-				trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
-				if (!trulySafe) {
-					if (haveBomb(j, i, k)) {
-						int radius = bRadius(j, i, k);
-						safe = (radius < abs(k - _y));
+			if (safe)
+				if (!HorizontalSafe)
+					if (e[i].GetY() == _y) {
+						safe = !(abs(e[i].GetX() - _x) < e[i].GetRadius());
 					}
-				}
-			}
-			k++;
-
-			if (safe) {
-
-				//downward
-				bool trulySafe = false;
-				int i = _x, k = _y;
-				while ((safe) && (!trulySafe) && (i <= xSize)) {
-					trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
-					if (!trulySafe) {
-						if (haveBomb(j, i, k)) {
-							int radius = bRadius(j, i, k);
-							safe = (radius < abs(k - _y));
-						}
-					}
-					k--;
-
-				}
-			}
 		}
+		if (safe) i++;
 	}
+
 	return safe;
 }
 
@@ -174,32 +125,15 @@ string Detect::IsAroundSafe()
 	return out;
 }
 
-void Detect::DetectAround(int n)
-{
-	detectionDone = true;
-	const int size = (n*n + ((n - 1)*(n - 1)));
-	detectionArea = size;
-	e = new EntityID[size];
-	int idx = 0;
-	for (int i = -n; i <= n; i++) {
-		for (int k = -n + abs(i); k < n - abs(i); k++) {
-			string id = (block(j, x + i, y + k, Entity) != "null") ?
-				block(j, i, k, Entity) : block(j, i, k, PowerUp);
-			e[idx].Set(id,x+i,y+k);
-			idx++;
-		}
-	}
-}
-
-
 bool Detect::IsDestructibleAdjacent()
 {
-	bool yes;
-	int i = 0, k = 0;
-	for (int i = -1; i <= 1; i++) {
-		for (int k = (-1 + abs(i)); k < (1 - abs(i)); k++) {
-			yes = (block(j, x + i, y + k, Entity) == DestructibleWall);
+	bool yes = false;
+	int i = 0;
+	while((!yes)&&(i < detectionArea)) {
+		if (e[i].GetID() == DestructibleWall) {
+			yes = (DistanceFromHere(e[i]) == 1.0f);
 		}
+		if (!yes) i++;
 	}
 	return yes;
 }
@@ -207,27 +141,7 @@ bool Detect::IsDestructibleAdjacent()
 bool Detect::IsEscapePossible()
 {
 	bool yes = false;
-	int i = -1,k = -1;
-
-	//check diagonal block
-	while ((!yes) && (abs(i) < (bag * 3) + 1)){
-		k = -1;
-		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + k, Entity) == "null"));
-		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + abs(k), Entity) == "null"));
-		yes |= ((block(j, x + abs(i), y, Entity) == "null") && (block(j, x + abs(i), y + k, Entity) == "null"));
-		yes |= ((block(j, x + abs(i), y, Entity) == "null") && (block(j, x + abs(i), y + abs(k), Entity) == "null"));
-		i--;
-	}
-
-	i = -1, k = -1;
-	while ((!yes) && (abs(k) < bag)) {
-		i = -1;
-		yes |= ((block(j, x, y + k, Entity) == "null") && (block(j, x + i, y + k, Entity) == "null"));
-		yes |= ((block(j, x, y + k, Entity) == "null") && (block(j, x + abs(i), y + k, Entity) == "null"));
-		yes |= ((block(j, x, y + abs(k), Entity) == "null") && (block(j, x + i, y + abs(k), Entity) == "null"));
-		yes |= ((block(j, x, y + abs(k), Entity) == "null") && (block(j, x + abs(i), y + abs(k), Entity) == "null"));
-		k--;
-	}
+	int i = -1, k = -1;
 	return yes;
 }
 

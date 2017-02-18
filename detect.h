@@ -15,18 +15,7 @@ public:
 	@brief constructor
 	@param x,y player location to check
 	*/
-	Detect(std::string key, nlohmann::json _j) {
-		j = _j;
-		int i = 0;
-		while (player(j, i, Key).get<std::string>() != key)
-			i++;
-		x = playerX(j, i);
-		y = playerY(j, i);
-		radius = player(j, i, BombRadius).get<int>();
-		bag = player(j, i, BombBag).get<int>();
-		detectionDone = false;
-		detectionArea = 0;
-	}
+	Detect(std::string key, nlohmann::json _j,int n);
 
 	/*!
 	@brief destructor
@@ -61,12 +50,6 @@ public:
 	std::string IsAroundSafe();
 
 	/*!
-	@brief this will detect what is around the player location x,y
-	this will modify detectionList d
-	*/
-	void DetectAround(int n);
-
-	/*!
 	@brief this will tell id there is any destructible adjacent to the player
 	@return true or false
 	*/
@@ -93,8 +76,8 @@ public:
 
 
 private:
-	bool detectionDone;
 	int detectionArea;
+	int detectionRadius;
 	int x;
 	int y;
 	int radius;

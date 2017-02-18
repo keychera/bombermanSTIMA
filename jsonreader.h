@@ -12,6 +12,7 @@
 #define IndestructibleWall "Domain.Entities.IndestructibleWallEntity, Domain"
 #define DestructibleWall "Domain.Entities.DestructibleWallEntity, Domain"
 #define PlayerEntity "Domain.Entities.PlayerEntity, Domain"
+#define Bomb "Bomb"
 
 /*	TIPE POWERUP
 	SuperPowerup - Simbol '$'
