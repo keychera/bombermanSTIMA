@@ -35,8 +35,8 @@
 	Location  //Use playerX & playerY instead of this
 */
 #define player(j,i,...) (j)["RegisteredPlayerEntities"][(i)][#__VA_ARGS__]
-#define playerX(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["X"]
-#define playerY(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["Y"]
+#define playerX(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["X"].get<int>()
+#define playerY(j,i) (j)["RegisteredPlayerEntities"][(i)]["Location"]["Y"].get<int>()
 
 /*	MAP SIZE
 	j: variable json
@@ -44,8 +44,8 @@
 	mapX - Lebar Map(Horizontal)
 	mapY - Tinggi Map(Vertical)
 */
-#define mapX(j) (j)["MapWidth"]
-#define mapY(j) (j)["MapHeight"]
+#define mapX(j) (j)["MapWidth"].get<int>()
+#define mapY(j) (j)["MapHeight"].get<int>()
 
 /*	BOMB CHECKER
 	haveBomb(j,i,k) - untuk mengecek apakah block tertentu ada bomb
@@ -56,8 +56,8 @@
 	k: koordinat Y
 */
 #define haveBomb(j,i,k)	((j)["GameBlocks"][i][k]["Bomb"].is_null() ? false : true)
-#define bRadius(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombRadius"] : -1)
-#define bTimer(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombTimer"] : -1)
+#define bRadius(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombRadius"].get<int>() : -1)
+#define bTimer(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombTimer"].get<int>() : -1)
 
 /*	GAME BLOCK
 	j : variable json
@@ -67,7 +67,7 @@
 	Entity	- Tipe entity pada block (lihat daftar tipe), jika tidak ada entity nilainya "null"
 	PowerUp	- Tipe powerup pada block, jika tidak ada power up nilainya "null"
 */
-#define block(j,i,k,...) (!(j)["GameBlocks"][i][k][#__VA_ARGS__].is_null() ? (j)["GameBlocks"][i][k][#__VA_ARGS__]["$type"] : "null")
+#define block(j,i,k,...) (!(j)["GameBlocks"][i][k][#__VA_ARGS__].is_null() ? (j)["GameBlocks"][i][k][#__VA_ARGS__]["$type"].get<std::string>() : "null")
 
 #endif
 

@@ -42,6 +42,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	json j;
 	readStateFile(filePath, j);
 
+	int xy = (j)["MapWidth"].get<int>();
+
 	string PlayerKey = argv[1];
 
 	Detect d(PlayerKey, j);
@@ -144,19 +146,11 @@ EntityID strategize(Detect & d,json & j)
 {
 	int xCenter = mapX(j) / 2;
 	int yCenter = mapY(j) / 2;
-	EntityID eOut("Center",xCenter,yCenter);
-	//d.IsSafe();
-	//d.IsAroundSafe();
-	//d.IsDestructibleOneTileAway();
-	d.IsEscapePossible(); //this is okay
-	//d.DetectAround(3);
-	d.IsSuperPowerUpAround();	//this is okay
-	d.IsPowerUpAround();		//this is okay
-	d.IsDestructibleAround();	//this is okay
-	/*if (d.IsSafe()) {
+	EntityID eOut("Center", xCenter, yCenter);
+	if (d.IsSafe()) {
 		string mark = d.IsAroundSafe();
 		d.DetectAround(3);
-		if (d.IsDestructibleOneTileAway() && d.IsEscapePossible()){
+		if (d.IsDestructibleAdjacent() && d.IsEscapePossible()){
 			eOut.Set("Bomb", 0, 0);
 		}
 		else {
@@ -173,6 +167,6 @@ EntityID strategize(Detect & d,json & j)
 		}
 	} else {
 		eOut.Set("MoveToSafety", 0, 0);
-	}*/
+	}
 	return eOut;
 }

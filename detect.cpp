@@ -5,21 +5,22 @@ using json = nlohmann::json;
 Detect::~Detect()
 {
 	if (detectionDone)
-		delete [] e;
+		delete e;
 }
 
 bool Detect::IsSafe()
 {
+	
 	int xSize = mapX(j);
 	int ySize = mapY(j);
 
 	bool safe = true;
 	bool trulySafe = false;
-
+	
 	//to the right
 	int i = x, k = y;
 	while ((safe) && (!trulySafe) && (i <= xSize)) {
-		trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
+		trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
 		if (!trulySafe) {
 			if (haveBomb(j, i, k)) {
 				int radius = bRadius(j, i, k);
@@ -34,7 +35,7 @@ bool Detect::IsSafe()
 		bool trulySafe = false;
 		int i = x, k = y;
 		while ((safe) && (!trulySafe) && (i <= xSize)) {
-			trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
+			trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
 			if (!trulySafe) {
 				if (haveBomb(j, i, k)) {
 					int radius = bRadius(j, i, k);
@@ -50,7 +51,7 @@ bool Detect::IsSafe()
 			bool trulySafe = false;
 			int i = x, k = y;
 			while ((safe) && (!trulySafe) && (i <= xSize)) {
-				trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
+				trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
 				if (!trulySafe) {
 					if (haveBomb(j, i, k)) {
 						int radius = bRadius(j, i, k);
@@ -66,7 +67,7 @@ bool Detect::IsSafe()
 				bool trulySafe = false;
 				int i = x, k = y;
 				while ((safe) && (!trulySafe) && (i <= xSize)) {
-					trulySafe = (block(j, i, k, Entity) == IndestructibleWall);
+					trulySafe = ((block(j, i, k, Entity) == IndestructibleWall) || (block(j, i, k, Entity) == DestructibleWall));
 					if (!trulySafe) {
 						if (haveBomb(j, i, k)) {
 							int radius = bRadius(j, i, k);
@@ -79,7 +80,9 @@ bool Detect::IsSafe()
 			}
 		}
 	}
+
 	return safe;
+
 }
 
 bool Detect::IsSafe(int _x, int _y)
@@ -89,7 +92,7 @@ bool Detect::IsSafe(int _x, int _y)
 
 	bool safe = true;
 	bool trulySafe = false;
-
+	
 	//to the right
 	int i = _x, k = _y;
 	while ((safe) && (!trulySafe) && (i <= xSize)) {
@@ -188,12 +191,14 @@ void Detect::DetectAround(int n)
 	}
 }
 
-bool Detect::IsDestructibleOneTileAway()
+
+bool Detect::IsDestructibleAdjacent()
 {
-	bool yes = false;
+	bool yes;
+	int i = 0, k = 0;
 	for (int i = -1; i <= 1; i++) {
-		for (int k = -1 + abs(i); k < 1 - abs(i); k++) {
-			yes |= (block(j, x + i, y + k, Entity) == DestructibleWall);
+		for (int k = (-1 + abs(i)); k < (1 - abs(i)); k++) {
+			yes = (block(j, x + i, y + k, Entity) == DestructibleWall);
 		}
 	}
 	return yes;
@@ -203,9 +208,9 @@ bool Detect::IsEscapePossible()
 {
 	bool yes = false;
 	int i = -1,k = -1;
-	//check diagonal block
 
-	while ((!yes) && (abs(i) < bag)){
+	//check diagonal block
+	while ((!yes) && (abs(i) < (bag * 3) + 1)){
 		k = -1;
 		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + k, Entity) == "null"));
 		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + abs(k), Entity) == "null"));
@@ -214,12 +219,13 @@ bool Detect::IsEscapePossible()
 		i--;
 	}
 
+	i = -1, k = -1;
 	while ((!yes) && (abs(k) < bag)) {
 		i = -1;
-		yes |= ((block(j, x + k, y, Entity) == "null") && (block(j, x + k, y + i, Entity) == "null"));
-		yes |= ((block(j, x + k, y, Entity) == "null") && (block(j, x + k, y + abs(i), Entity) == "null"));
-		yes |= ((block(j, x + abs(k), y, Entity) == "null") && (block(j, x + abs(k), y + i, Entity) == "null"));
-		yes |= ((block(j, x + abs(k), y, Entity) == "null") && (block(j, x + abs(k), y + abs(i), Entity) == "null"));
+		yes |= ((block(j, x, y + k, Entity) == "null") && (block(j, x + i, y + k, Entity) == "null"));
+		yes |= ((block(j, x, y + k, Entity) == "null") && (block(j, x + abs(i), y + k, Entity) == "null"));
+		yes |= ((block(j, x, y + abs(k), Entity) == "null") && (block(j, x + i, y + abs(k), Entity) == "null"));
+		yes |= ((block(j, x, y + abs(k), Entity) == "null") && (block(j, x + abs(i), y + abs(k), Entity) == "null"));
 		k--;
 	}
 	return yes;

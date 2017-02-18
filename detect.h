@@ -15,14 +15,15 @@ public:
 	@brief constructor
 	@param x,y player location to check
 	*/
-	Detect(std::string key, nlohmann::json _j) : j(_j) {
+	Detect(std::string key, nlohmann::json _j) {
+		j = _j;
 		int i = 0;
-		while (player(j, i, Key) != key)
+		while (player(j, i, Key).get<std::string>() != key)
 			i++;
 		x = playerX(j, i);
 		y = playerY(j, i);
-		radius = player(j, i, BombRadius);
-		bag = player(j, i, BombBag);
+		radius = player(j, i, BombRadius).get<int>();
+		bag = player(j, i, BombBag).get<int>();
 		detectionDone = false;
 		detectionArea = 0;
 	}
@@ -69,7 +70,7 @@ public:
 	@brief this will tell id there is any destructible adjacent to the player
 	@return true or false
 	*/
-	bool IsDestructibleOneTileAway();
+	bool IsDestructibleAdjacent();
 
 	/*!
 	@brief this will tell if there is any escape if the player put the bomb
@@ -98,7 +99,7 @@ private:
 	int y;
 	int radius;
 	int bag;
-	nlohmann::json& j;
+	nlohmann::json j;
 	EntityID *e;
 };
 
