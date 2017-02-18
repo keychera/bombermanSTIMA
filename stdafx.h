@@ -18,7 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h> 
-
+#include <cmath>
 
 #include "jsonreader.h"
 #include "detect.h"

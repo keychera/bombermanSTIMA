@@ -5,8 +5,9 @@
 using json = nlohmann::json;
 using namespace std;
 
-void readStateFile(string filePath);
-void writeMoveFile(string filePath);
+void readStateFile(string filePath, json& j);
+void writeMoveFile(string filePath, int move);
+int Strategy(Detect d,int x, int y);
 
 /* json tester
 int main() {
@@ -29,21 +30,23 @@ int main() {
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	int move;
 	string filePath = argv[2];
 
 	cout << "Args: " << argc << std::endl;
 	cout << "Player Key: " << argv[1] << std::endl;
 	cout << "File Path: " << argv[2] << std::endl;
 
+	json j;
+	readStateFile(filePath,j);
 
-
-	readStateFile(filePath);
-	//Strategy():
-	writeMoveFile(filePath);
+	Detect d(argv[1], j);
+	move = Strategy(d,11,11);
+	writeMoveFile(filePath,move);
 	return 0;
 }
 
-void readStateFile(string filePath)
+void readStateFile(string filePath,json& j)
 {
 	cout << "Reading state file " << filePath + "/" + "state.json" << std::endl;
 	string fileContent;
@@ -51,22 +54,74 @@ void readStateFile(string filePath)
 	ifstream myfile(filePath + "/" + "state.json");
 	if (myfile.is_open())
 	{
-		while (getline(myfile, line))
-		{
-			fileContent += line += "\n";
-		}
-		myfile.close();
+		myfile >> j;
 	}
 }
 
-void writeMoveFile(string filePath)
+void writeMoveFile(string filePath,int move)
 {
 	cout << "Writing move file " << filePath + "/" + "move.txt" << std::endl;
 	ofstream outfile(filePath + "/" + "move.txt");
 
 	if (outfile.is_open())
 	{
-		outfile << '5' << std::endl;
+		outfile << move << std::endl;
 		outfile.close();
 	}
+}
+
+int Strategy(Detect d,int x,int y) {
+	/* Return move comamnd
+	GAME COMMAND
+	MoveUp = 1,
+	MoveLeft = 2,
+	MoveRight = 3,
+	MoveDown = 4,
+	PlaceBomb = 5,
+	TriggerBomb = 6,
+	DoNothing = 7
+	*/
+	
+	/*	METHOD YANG BELUM DIIMPLEMETASI
+		Detect.GetX() - Mengembalikan posisi x player
+		Detect.GetY() - Mengembalikan posisi y player
+		Detect.GetJson() - Mengembalikan json detect
+	*/
+	int move = 7; //cuma ada 1 return, jadi pakai integer 
+	
+	//Add strategy lain di atas ini
+	int dX = x - d.GetX(), dY = y - d.GetY();
+	if (abs(dX) < abs(dY))
+	{
+		if (block(d.GetJson(), (d.GetX() + (dX / abs(dX))), d.GetY()) != IndestructibleWall)
+		{
+			if (dX > 0)
+				move = 3; //MoveRight
+			else if (dX < 0)
+				move = 2; //MoveLeft
+		}
+		else {
+			if (dY > 0)
+				move = 4; //MoveDown
+			else if (dY < 0)
+				move = 1; //MoveUp
+		}
+	}
+	else
+	{
+		if (block(d.GetJson(), d.GetY(), (d.GetY() + (dY / abs(dY)))) != IndestructibleWall)
+		{
+			if (dY > 0)
+				move = 4; //MoveDown
+			else if (dY < 0)
+				move = 1; //MoveUp
+		}
+		else {
+			if (dX > 0)
+				move = 3; //MoveRight
+			else if (dX < 0)
+				move = 2; //MoveLeft
+		}
+	}
+	return move;
 }
