@@ -89,43 +89,104 @@ int Strategy(Detect d,int x,int y,json& j) {
 		Detect.GetY() - Mengembalikan posisi y player
 	*/
 	int move = 7; //cuma ada 1 return, jadi pakai integer 
-	
-	//Add strategy lain di atas ini
 	int dX = x - d.GetX(), dY = y - d.GetY();
-	if (abs(dX) < abs(dY)){
-		if ( block(j, (d.GetX() + (dX / abs(dX))), d.GetY(),Entity) != IndestructibleWall ){
-			if (dX > 0) {
-				move = 3; //MoveRight
-			} 
-			else {
-				if (dX < 0)
-					move = 2; //MoveLeft
+	if (!d.IsSafe()){
+		//Implementasi movetosafety
+		string s = d.IsAroundSafe();
+		//Jika tidak ada safe zone di sekitar
+		if (s == "0000"){
+			int i = d.GetX()-1, k = d.GetY()-1;
+			bool found = false;
+			while (i < (int)mapY(j) && !found && block(j, i , k+1, Entity) == "null")
+			{
+				if (d.IsAroundSafe(i , (k+1)) != "0000") {
+					found = true;
+					move = 4;
+				}
+				else
+					k++;
 			}
-		} else {
-			if (dY > 0) {
-				move = 4; //MoveDown
+			while (i > 0 && !found && block(j, i , k-1, Entity) == "null")
+			{
+				if (d.IsAroundSafe(i, (k-1)) != "0000") {
+					found = true;
+					move = 1;
+				}
+				else
+					k--;
 			}
-			else {
-				if (dY < 0)
-					move = 1;  //MoveUp
+			while (i < (int)mapX(j) && !found && block(j, i + 1, k, Entity) == "null")
+			{
+				if (d.IsAroundSafe((i + 1), k) != "0000") {
+					found = true;
+					move = 3;
+				}
+				else
+					i++;
+			}
+			while (i > 0 && !found && block(j, i-1 , k, Entity) == "null")
+			{
+				if (d.IsAroundSafe((i - 1), k) != "0000") {
+					found = true;
+					move = 2;
+				}
+				else
+					i--;
 			}
 		}
-	} else {
-		if ( block(j, d.GetY(), (d.GetY() + (dY / abs(dY))), Entity) != IndestructibleWall ) {
-			if (dY > 0) {
-				move = 4; //MoveDown
+		else {
+			int i = 0;
+			while (i < 4 && s[i] != '1')
+			{
+				if (s[i] == '1')
+					move = i + 1;
+				else
+					i++;
+			}
+		}
+	}
+	else {
+
+		//Add strategy lain di atas ini
+		//Jalankan kode di bawah jika disekitar player tidak ada entity atau indestructiblewall
+		if (abs(dX) < abs(dY)) {
+			if (block(j, (d.GetX() + (dX / abs(dX)) -1), d.GetY()-1, Entity) != IndestructibleWall) {
+				if (dX > 0) {
+					move = 3; //MoveRight
+				}
+				else {
+					if (dX < 0)
+						move = 2; //MoveLeft
+				}
 			}
 			else {
-				if (dY < 0)
-					move = 1; //MoveUp
+				if (dY > 0) {
+					move = 4; //MoveDown
+				}
+				else {
+					if (dY < 0)
+						move = 1;  //MoveUp
+				}
 			}
-		} else {
-			if (dX > 0) {
-				move = 3; //MoveRight
-			} 
+		}
+		else {
+			if (block(j, d.GetX()-1, (d.GetY() + (dY / abs(dY) - 1)), Entity) != IndestructibleWall) {
+				if (dY > 0) {
+					move = 4; //MoveDown
+				}
+				else {
+					if (dY < 0)
+						move = 1; //MoveUp
+				}
+			}
 			else {
-				if (dX < 0)
-					move = 2; //MoveLeft
+				if (dX > 0) {
+					move = 3; //MoveRight
+				}
+				else {
+					if (dX < 0)
+						move = 2; //MoveLeft
+				}
 			}
 		}
 	}
