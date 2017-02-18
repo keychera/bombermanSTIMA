@@ -9,6 +9,8 @@ void readStateFile(string filePath, json& j);
 void writeMoveFile(string filePath, int move);
 int Strategy(Detect d,int x, int y,json& j);
 
+EntityID strategize(Detect &d, json & j);
+
 /* json tester
 int main() {
 	json j;
@@ -38,12 +40,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "File Path: " << argv[2] << std::endl;
 
 	json j;
-	readStateFile(filePath,j);
+	readStateFile(filePath, j);
 
 	string PlayerKey = argv[1];
 
 	Detect d(PlayerKey, j);
-	move = Strategy(d,11,11,j);
+	EntityID target = strategize(d, j);
+	if (target.GetID() != "null") {
+		if (target.GetID() != "Bomb")
+			move = Strategy(d, target.GetX(), target.GetY(), j);
+		else
+			move = 5;
+	}
 	writeMoveFile(filePath,move);
 	return 0;
 }
@@ -130,4 +138,41 @@ int Strategy(Detect d,int x,int y,json& j) {
 		}
 	}
 	return move;
+}
+
+EntityID strategize(Detect & d,json & j)
+{
+	int xCenter = mapX(j) / 2;
+	int yCenter = mapY(j) / 2;
+	EntityID eOut("Center",xCenter,yCenter);
+	//d.IsSafe();
+	//d.IsAroundSafe();
+	//d.IsDestructibleOneTileAway();
+	d.IsEscapePossible(); //this is okay
+	//d.DetectAround(3);
+	d.IsSuperPowerUpAround();	//this is okay
+	d.IsPowerUpAround();		//this is okay
+	d.IsDestructibleAround();	//this is okay
+	/*if (d.IsSafe()) {
+		string mark = d.IsAroundSafe();
+		d.DetectAround(3);
+		if (d.IsDestructibleOneTileAway() && d.IsEscapePossible()){
+			eOut.Set("Bomb", 0, 0);
+		}
+		else {
+			eOut = d.IsSuperPowerUpAround();
+			if (eOut.GetID() == "null") {
+				eOut = d.IsPowerUpAround();
+				if (eOut.GetID() == "null") {
+					eOut = d.IsDestructibleAround();
+					if (eOut.GetID() == "null") {
+						eOut.Set("Center", xCenter, yCenter);
+					}
+				}
+			}
+		}
+	} else {
+		eOut.Set("MoveToSafety", 0, 0);
+	}*/
+	return eOut;
 }

@@ -164,10 +164,10 @@ bool Detect::IsEntity(int _x, int _y)
 string Detect::IsAroundSafe()
 {
 	string out = "0000";
-	out[0] = IsSafe(x, y + 1) ? (!IsEntity(x, y + 1) ? 1 : 0) : 0;
-	out[1] = IsSafe(x - 1, y) ? (!IsEntity(x - 1, y) ? 1 : 0) : 0;
-	out[2] = IsSafe(x + 1, y) ? (!IsEntity(x + 1, y) ? 1 : 0) : 0;
-	out[3] = IsSafe(x, y - 1) ? (!IsEntity(x, y - 1) ? 1 : 0) : 0;
+	out[0] = IsSafe(x, y + 1) ? 1 : 0;
+	out[1] = IsSafe(x - 1, y) ? 1 : 0;
+	out[2] = IsSafe(x + 1, y) ? 1 : 0;
+	out[3] = IsSafe(x, y - 1) ? 1 : 0;
 	return out;
 }
 
@@ -240,28 +240,41 @@ EntityID Detect::IsSuperPowerUpAround()
 
 EntityID Detect::IsPowerUpAround()
 {
-	int i = 0;
-	bool found = false;
-	while ((!found) && (i < detectionArea)) {
-		found = (e[i].GetID() == BagPowerup) || (e[i].GetID() == RadiusPowerup);
-		i++;
+	int i,chosen = -1;
+	double minDist = 9999.0f;
+	for (i = 0; i < detectionArea;i++) {
+		if ((e[i].GetID() == BagPowerup) || (e[i].GetID() == RadiusPowerup)) {
+			if (DistanceFromHere(e[i]) < minDist) {
+				minDist = DistanceFromHere(e[i]);
+				chosen = i;
+			}
+		}
 	}
 	EntityID eOut;
-	if (found) eOut = e[i];
+	if (chosen != -1) eOut = e[chosen];
 	return eOut;
 }
 
 EntityID Detect::IsDestructibleAround()
 {
-	int i = 0;
-	bool found = false;
-	while ((!found) && (i < detectionArea)) {
-		found = (e[i].GetID() == SuperPowerup);
-		i++;
+	int i,chosen = -1;
+	double minDist = 9999.0f;
+	for (i = 0; i < detectionArea;i++) {
+		if (e[i].GetID() == DestructibleWall) {
+			if (DistanceFromHere(e[i]) < minDist) {
+				minDist = DistanceFromHere(e[i]);
+				chosen = i;
+			}
+		}
 	}
 	EntityID eOut;
-	if (found) eOut = e[i];
+	if (chosen != -1) eOut = e[chosen];
 	return eOut;
+}
+
+double Detect::DistanceFromHere(EntityID e)
+{
+	return sqrt((e.GetX() - x)*(e.GetX() - x) + (e.GetY() - y)*(e.GetY() - y));
 }
 
 
