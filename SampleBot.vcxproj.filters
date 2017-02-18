@@ -30,6 +30,15 @@
     <ClInclude Include="jsonreader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="detect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strategize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -21,3 +21,5 @@
 
 
 #include "jsonreader.h"
+#include "detect.h"
+#include "strategize.h"
