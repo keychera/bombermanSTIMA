@@ -44,18 +44,20 @@ public:
 	*/
 	bool IsSafe(int _x, int _y);
 
+	bool IsEntity(int _x, int _y);
+
 	/*!
 	@brief this will check if tiles around the player is a safe place to move
 	@return string of 4 character to mark which direction is safe
 	string format
-		1st char = right
+		1st char = up
 		2nd char = left
-		3rd char = up
+		3rd char = right
 		4th char = down
 	example 1011 -> right is the only direction that is not safe
-	it will marked 1 if there is no possible move in one direction
+	it will marked 0 if there is no possible move in one direction
 	*/
-	bool IsAroundSafe();
+	std::string IsAroundSafe();
 
 	/*!
 	@brief this will detect what is around the player location x,y

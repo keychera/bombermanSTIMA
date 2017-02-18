@@ -156,13 +156,18 @@ bool Detect::IsSafe(int _x, int _y)
 	return safe;
 }
 
-bool Detect::IsAroundSafe()
+bool Detect::IsEntity(int _x, int _y)
 {
-	bool out =
-		IsSafe(x + 1, y) &&
-		IsSafe(x - 1, y) &&
-		IsSafe(x, y + 1) &&
-		IsSafe(x, y - 1);
+	return (block(j, _x, _y, Entity) != "null");
+}
+
+string Detect::IsAroundSafe()
+{
+	string out = "0000";
+	out[0] = IsSafe(x, y + 1) ? (!IsEntity(x, y + 1) ? 1 : 0) : 0;
+	out[1] = IsSafe(x - 1, y) ? (!IsEntity(x - 1, y) ? 1 : 0) : 0;
+	out[2] = IsSafe(x + 1, y) ? (!IsEntity(x + 1, y) ? 1 : 0) : 0;
+	out[3] = IsSafe(x, y - 1) ? (!IsEntity(x, y - 1) ? 1 : 0) : 0;
 	return out;
 }
 
@@ -202,25 +207,51 @@ bool Detect::IsEscapePossible()
 
 	while ((!yes) && (abs(i) < bag)){
 		k = -1;
-		yes |= ((block(j, x + i, 0, Entity) != "null") && (block(j, x + i, k, Entity) != "null"));
-		yes |= ((block(j, x + i, 0, Entity) != "null") && (block(j, x + i, abs(k), Entity) != "null"));
-		yes |= ((block(j, x + abs(i), 0, Entity) != "null") && (block(j, x + abs(i), k, Entity) != "null"));
-		yes |= ((block(j, x + abs(i), 0, Entity) != "null") && (block(j, x + abs(i), abs(k), Entity) != "null"));
+		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + k, Entity) == "null"));
+		yes |= ((block(j, x + i, y, Entity) == "null") && (block(j, x + i, y + abs(k), Entity) == "null"));
+		yes |= ((block(j, x + abs(i), y, Entity) == "null") && (block(j, x + abs(i), y + k, Entity) == "null"));
+		yes |= ((block(j, x + abs(i), y, Entity) == "null") && (block(j, x + abs(i), y + abs(k), Entity) == "null"));
 		i--;
 	}
 
 	while ((!yes) && (abs(k) < bag)) {
 		i = -1;
-		yes |= ((block(j, x + k, 0, Entity) != "null") && (block(j, x + k, i, Entity) != "null"));
-		yes |= ((block(j, x + k, 0, Entity) != "null") && (block(j, x + k, abs(i), Entity) != "null"));
-		yes |= ((block(j, x + abs(k), 0, Entity) != "null") && (block(j, x + abs(k), i, Entity) != "null"));
-		yes |= ((block(j, x + abs(k), 0, Entity) != "null") && (block(j, x + abs(k), abs(i), Entity) != "null"));
+		yes |= ((block(j, x + k, y, Entity) == "null") && (block(j, x + k, y + i, Entity) == "null"));
+		yes |= ((block(j, x + k, y, Entity) == "null") && (block(j, x + k, y + abs(i), Entity) == "null"));
+		yes |= ((block(j, x + abs(k), y, Entity) == "null") && (block(j, x + abs(k), y + i, Entity) == "null"));
+		yes |= ((block(j, x + abs(k), y, Entity) == "null") && (block(j, x + abs(k), y + abs(i), Entity) == "null"));
 		k--;
 	}
 	return yes;
 }
 
 EntityID Detect::IsSuperPowerUpAround()
+{
+	int i = 0;
+	bool found = false;
+	while ((!found) && (i < detectionArea)) {
+		found = (e[i].GetID() == SuperPowerup);
+		i++;
+	}
+	EntityID eOut;
+	if (found) eOut = e[i];
+	return eOut;
+}
+
+EntityID Detect::IsPowerUpAround()
+{
+	int i = 0;
+	bool found = false;
+	while ((!found) && (i < detectionArea)) {
+		found = (e[i].GetID() == BagPowerup) || (e[i].GetID() == RadiusPowerup);
+		i++;
+	}
+	EntityID eOut;
+	if (found) eOut = e[i];
+	return eOut;
+}
+
+EntityID Detect::IsDestructibleAround()
 {
 	int i = 0;
 	bool found = false;
