@@ -225,7 +225,7 @@ EntityID Detect::IsSuperPowerUpAround()
 	int i = 0;
 	bool found = false;
 	while ((!found) && (i < detectionArea)) {
-		found = (e[i].GetID == SuperPowerup);
+		found = (e[i].GetID() == SuperPowerup);
 		i++;
 	}
 	EntityID eOut;
