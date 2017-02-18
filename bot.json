@@ -3,6 +3,6 @@
     "Email":"TheAnswer@IFITB",
     "NickName" :"bot42",
     "BotType": "CPlusPlus",
-    "ProjectLocation" : "SampleBot\\",
-    "RunFile" : "SampleBot\\Release\\SampleBot.exe"
+    "ProjectLocation" : "",
+    "RunFile" : "SampleBot\\Debug\\SampleBot.exe"
 }

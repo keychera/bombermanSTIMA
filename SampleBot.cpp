@@ -47,13 +47,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	string PlayerKey = argv[1];
 
 	Detect d(PlayerKey, j);
-	EntityID target = strategize(d, j);
-	if (target.GetID() != "null") {
-		if (target.GetID() != "Bomb")
-			move = Strategy(d, target.GetX(), target.GetY(), j);
-		else
-			move = 5;
-	}
+//	EntityID target = strategize(d, j);
+//	if (target.GetID() != "null") {
+//		if (target.GetID() != "Bomb")
+			move = Strategy(d, 11, 11, j);
+//		else
+//		move = 5;
+//	}
 	writeMoveFile(filePath,move);
 	return 0;
 }
@@ -102,39 +102,36 @@ int Strategy(Detect d,int x,int y,json& j) {
 	
 	//Add strategy lain di atas ini
 	int dX = x - d.GetX(), dY = y - d.GetY();
-	if (abs(dX) < abs(dY)){
-		if ( block(j, (d.GetX() + (dX / abs(dX))), d.GetY(),Entity) != IndestructibleWall ){
+	if (abs(dX) > abs(dY)){
+		if ( block(j, (d.GetX() -1 + (dX / abs(dX))), d.GetY()-1,Entity) != IndestructibleWall ){
 			if (dX > 0) {
 				move = 3; //MoveRight
 			} 
-			else {
-				if (dX < 0)
+			else if (dX < 0){
 					move = 2; //MoveLeft
 			}
 		} else {
 			if (dY > 0) {
 				move = 4; //MoveDown
 			}
-			else {
-				if (dY < 0)
+			else if (dY < 0){
 					move = 1;  //MoveUp
 			}
 		}
 	} else {
-		if ( block(j, d.GetY(), (d.GetY() + (dY / abs(dY))), Entity) != IndestructibleWall ) {
+		if ( block(j, d.GetY()-1, (d.GetY() + (dY / abs(dY) - 1)), Entity) != IndestructibleWall ) {
+			
 			if (dY > 0) {
 				move = 4; //MoveDown
 			}
-			else {
-				if (dY < 0)
-					move = 1; //MoveUp
+			else if (dY < 0){
+				move = 1; //MoveUp
 			}
 		} else {
 			if (dX > 0) {
 				move = 3; //MoveRight
 			} 
-			else {
-				if (dX < 0)
+			else if (dX < 0){
 					move = 2; //MoveLeft
 			}
 		}
