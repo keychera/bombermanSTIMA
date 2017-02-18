@@ -2,17 +2,6 @@
 using namespace std;
 using json = nlohmann::json;
 
-Detect::Detect(string key, json _j)
-{
-	j = _j;
-	int i = 0;
-	while (player(j, i, Key) != key)
-		i++;
-	x = playerX(j,i);
-	y = playerY(j,i);
-	detectionDone = false;
-}
-
 Detect::~Detect()
 {
 	if (detectionDone)
@@ -167,29 +156,85 @@ bool Detect::IsSafe(int _x, int _y)
 	return safe;
 }
 
-string Detect::IsAroundSafe()
+bool Detect::IsAroundSafe()
 {
-	string out = "1111";
-	//check all direction
-	out[0] = IsSafe(x + 1, y) ? '1' : '0';
-	out[1] = IsSafe(x - 1, y) ? '1' : '0';
-	out[2] = IsSafe(x, y + 1) ? '1' : '0';
-	out[3] = IsSafe(x, y - 1) ? '1' : '0';
+	bool out =
+		IsSafe(x + 1, y) &&
+		IsSafe(x - 1, y) &&
+		IsSafe(x, y + 1) &&
+		IsSafe(x, y - 1);
 	return out;
 }
 
 void Detect::DetectAround(int n)
 {
+	detectionDone = true;
 	const int size = (n*n + ((n - 1)*(n - 1)));
+	detectionArea = size;
 	e = new EntityID[size];
 	int idx = 0;
 	for (int i = -n; i <= n; i++) {
 		for (int k = -n + abs(i); k < n - abs(i); k++) {
 			string id = (block(j, x + i, y + k, Entity) != "null") ?
-				block(j, x + i, y + k, Entity) : block(j, x + i, y + k, PowerUp);
+				block(j, i, k, Entity) : block(j, i, k, PowerUp);
 			e[idx].Set(id,x+i,y+k);
 			idx++;
 		}
 	}
 }
+
+bool Detect::IsDestructibleOneTileAway()
+{
+	bool yes = false;
+	for (int i = -1; i <= 1; i++) {
+		for (int k = -1 + abs(i); k < 1 - abs(i); k++) {
+			yes |= (block(j, x + i, y + k, Entity) == DestructibleWall);
+		}
+	}
+	return yes;
+}
+
+bool Detect::IsEscapePossible()
+{
+	bool yes = false;
+	int i = -1,k = -1;
+	//check diagonal block
+
+	while ((!yes) && (abs(i) < bag)){
+		k = -1;
+		yes |= ((block(j, x + i, 0, Entity) != "null") && (block(j, x + i, k, Entity) != "null"));
+		yes |= ((block(j, x + i, 0, Entity) != "null") && (block(j, x + i, abs(k), Entity) != "null"));
+		yes |= ((block(j, x + abs(i), 0, Entity) != "null") && (block(j, x + abs(i), k, Entity) != "null"));
+		yes |= ((block(j, x + abs(i), 0, Entity) != "null") && (block(j, x + abs(i), abs(k), Entity) != "null"));
+		i--;
+	}
+
+	while ((!yes) && (abs(k) < bag)) {
+		i = -1;
+		yes |= ((block(j, x + k, 0, Entity) != "null") && (block(j, x + k, i, Entity) != "null"));
+		yes |= ((block(j, x + k, 0, Entity) != "null") && (block(j, x + k, abs(i), Entity) != "null"));
+		yes |= ((block(j, x + abs(k), 0, Entity) != "null") && (block(j, x + abs(k), i, Entity) != "null"));
+		yes |= ((block(j, x + abs(k), 0, Entity) != "null") && (block(j, x + abs(k), abs(i), Entity) != "null"));
+		k--;
+	}
+	return yes;
+}
+
+EntityID Detect::IsSuperPowerUpAround()
+{
+	int i = 0;
+	bool found = false;
+	while ((!found) && (i < detectionArea)) {
+		found = (e[i].GetID == SuperPowerup);
+		i++;
+	}
+	EntityID eOut;
+	if (found) eOut = e[i];
+	return eOut;
+}
+
+
+
+int Detect::GetX() { return x; }
+int Detect::GetY() { return y; }
 

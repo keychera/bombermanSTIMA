@@ -15,7 +15,17 @@ public:
 	@brief constructor
 	@param x,y player location to check
 	*/
-	Detect(std::string key, nlohmann::json _j);
+	Detect(std::string key, nlohmann::json _j) : j(_j) {
+		int i = 0;
+		while (player(j, i, Key) != key)
+			i++;
+		x = playerX(j, i);
+		y = playerY(j, i);
+		radius = player(j, i, BombRadius);
+		bag = player(j, i, BombBag);
+		detectionDone = false;
+		detectionArea = 0;
+	}
 
 	/*!
 	@brief destructor
@@ -45,7 +55,7 @@ public:
 	example 1011 -> right is the only direction that is not safe
 	it will marked 1 if there is no possible move in one direction
 	*/
-	std::string IsAroundSafe();
+	bool IsAroundSafe();
 
 	/*!
 	@brief this will detect what is around the player location x,y
@@ -53,9 +63,18 @@ public:
 	*/
 	void DetectAround(int n);
 
+	/*!
+	@brief this will tell id there is any destructible adjacent to the player
+	@return true or false
+	*/
 	bool IsDestructibleOneTileAway();
 
-	int IsEscapePossible();
+	/*!
+	@brief this will tell if there is any escape if the player put the bomb
+	@return true or false
+	if false, it will erase destructible in the entity list
+	*/
+	bool IsEscapePossible();
 
 	EntityID IsSuperPowerUpAround();
 
@@ -67,11 +86,15 @@ public:
 
 	int GetY();
 
+
 private:
 	bool detectionDone;
+	int detectionArea;
 	int x;
 	int y;
-	nlohmann::json j;
+	int radius;
+	int bag;
+	nlohmann::json& j;
 	EntityID *e;
 };
 

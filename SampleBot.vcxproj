@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="detect.cpp" />
+    <ClCompile Include="entity.cpp" />
     <ClCompile Include="SampleBot.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
