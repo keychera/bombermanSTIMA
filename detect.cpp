@@ -156,13 +156,18 @@ bool Detect::IsSafe(int _x, int _y)
 	return safe;
 }
 
-bool Detect::IsAroundSafe()
+bool Detect::IsEntity(int _x, int _y)
 {
-	bool out =
-		IsSafe(x + 1, y) &&
-		IsSafe(x - 1, y) &&
-		IsSafe(x, y + 1) &&
-		IsSafe(x, y - 1);
+	return (block(j, _x, _y, Entity) != "null");
+}
+
+string Detect::IsAroundSafe()
+{
+	string out = "0000";
+	out[0] = IsSafe(x, y + 1) ? (!IsEntity(x, y + 1) ? 1 : 0) : 0;
+	out[1] = IsSafe(x - 1, y) ? (!IsEntity(x - 1, y) ? 1 : 0) : 0;
+	out[2] = IsSafe(x + 1, y) ? (!IsEntity(x + 1, y) ? 1 : 0) : 0;
+	out[3] = IsSafe(x, y - 1) ? (!IsEntity(x, y - 1) ? 1 : 0) : 0;
 	return out;
 }
 
@@ -221,6 +226,32 @@ bool Detect::IsEscapePossible()
 }
 
 EntityID Detect::IsSuperPowerUpAround()
+{
+	int i = 0;
+	bool found = false;
+	while ((!found) && (i < detectionArea)) {
+		found = (e[i].GetID() == SuperPowerup);
+		i++;
+	}
+	EntityID eOut;
+	if (found) eOut = e[i];
+	return eOut;
+}
+
+EntityID Detect::IsPowerUpAround()
+{
+	int i = 0;
+	bool found = false;
+	while ((!found) && (i < detectionArea)) {
+		found = (e[i].GetID() == BagPowerup) || (e[i].GetID() == RadiusPowerup);
+		i++;
+	}
+	EntityID eOut;
+	if (found) eOut = e[i];
+	return eOut;
+}
+
+EntityID Detect::IsDestructibleAround()
 {
 	int i = 0;
 	bool found = false;
