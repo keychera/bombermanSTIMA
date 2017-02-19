@@ -15,17 +15,7 @@ public:
 	@brief constructor
 	@param x,y player location to check
 	*/
-	Detect(std::string key, nlohmann::json _j) : j(_j) {
-		int i = 0;
-		while (player(j, i, Key) != key)
-			i++;
-		x = playerX(j, i);
-		y = playerY(j, i);
-		radius = player(j, i, BombRadius);
-		bag = player(j, i, BombBag);
-		detectionDone = false;
-		detectionArea = 0;
-	}
+	Detect(std::string key, nlohmann::json _j,int n);
 
 	/*!
 	@brief destructor
@@ -54,22 +44,16 @@ public:
 		2nd char = left
 		3rd char = right
 		4th char = down
-	example 1011 -> right is the only direction that is not safe
-	it will marked 0 if there is no possible move in one direction
+	example 1011 -> left is the only direction that is not safe
+	it will marked 1 if there is no possible move in one direction(marked safe)
 	*/
 	std::string IsAroundSafe();
-
-	/*!
-	@brief this will detect what is around the player location x,y
-	this will modify detectionList d
-	*/
-	void DetectAround(int n);
-
+	std::string IsAroundSafe(int _x, int _y);
 	/*!
 	@brief this will tell id there is any destructible adjacent to the player
 	@return true or false
 	*/
-	bool IsDestructibleOneTileAway();
+	bool IsDestructibleAdjacent();
 
 	/*!
 	@brief this will tell if there is any escape if the player put the bomb
@@ -84,19 +68,21 @@ public:
 
 	EntityID IsDestructibleAround();
 
+	double DistanceFromHere(EntityID in);
+
 	int GetX();
 
 	int GetY();
 
 
 private:
-	bool detectionDone;
 	int detectionArea;
+	int detectionRadius;
 	int x;
 	int y;
 	int radius;
 	int bag;
-	nlohmann::json& j;
+	nlohmann::json j;
 	EntityID *e;
 };
 
