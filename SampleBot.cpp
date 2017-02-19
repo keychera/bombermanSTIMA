@@ -8,7 +8,7 @@ using namespace std;
 void readStateFile(string filePath, json& j);
 void writeMoveFile(string filePath, int move);
 int Strategy(Detect d,int x, int y,json& j);
-
+int MoveToSafety(Detect d, int x, int y, json& j);
 EntityID strategize(Detect &d, json & j);
 
 /* json tester
@@ -49,6 +49,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (target.GetID() != "null") {
 		if (target.GetID() == Bomb)
 			move = 5;
+		else if (target.GetID() == "MoveToSafety")
+			move = 1;
+			//move = MoveToSafety(d,target.GetX(),target.GetY(),j);
 		else
 			move = Strategy(d, target.GetX(), target.GetY(), j);
 	}
@@ -98,64 +101,7 @@ int Strategy(Detect d, int x, int y, json& j) {
 	*/
 	int move = 7; //cuma ada 1 return, jadi pakai integer 
 	int dX = x - d.GetX(), dY = y - d.GetY();
-	if (!d.IsSafe()) {
-		//Implementasi movetosafety
-		string s = d.IsAroundSafe();
-		//Jika tidak ada safe zone di sekitar
-		if (s == "0000") {
-			int i = d.GetX() , k = d.GetY() ;
-			bool found = false;
-			while (i < (int)mapY(j) && !found && block(j, i, k + 1, Entity) == "null")
-			{
-				if (d.IsAroundSafe(i, (k + 1)) != "0000") {
-					found = true;
-					move = 4;
-				}
-				else
-					k++;
-			}
-			while (i > 0 && !found && block(j, i, k - 1, Entity) == "null")
-			{
-				if (d.IsAroundSafe(i, (k - 1)) != "0000") {
-					found = true;
-					move = 1;
-				}
-				else
-					k--;
-			}
-			while (i < (int)mapX(j) && !found && block(j, i + 1, k, Entity) == "null")
-			{
-				if (d.IsAroundSafe((i + 1), k) != "0000") {
-					found = true;
-					move = 3;
-				}
-				else
-					i++;
-			}
-			while (i > 0 && !found && block(j, i - 1, k, Entity) == "null")
-			{
-				if (d.IsAroundSafe((i - 1), k) != "0000") {
-					found = true;
-					move = 2;
-				}
-				else
-					i--;
-			}
-		}
-		else {
-			int i = 0;
-			while (i < 4 && s[i] != '1')
-			{
-				if (s[i] == '1')
-					move = i + 1;
-				else
-					i++;
-			}
-		}
-	}
-	else {
-
-		//Add strategy lain di atas ini
+	//Add strategy lain di atas ini
 		//Jalankan kode di bawah jika disekitar player tidak ada entity atau indestructiblewall
 		if (abs(dX) > abs(dY)) {
 			if (block(j, (d.GetX() + (dX / abs(dX)) ), d.GetY() , Entity) != IndestructibleWall) {
@@ -196,6 +142,66 @@ int Strategy(Detect d, int x, int y, json& j) {
 						move = 2; //MoveLeft
 				}
 			}
+		
+	}
+	return move;
+}
+
+int MoveToSafety(Detect d, int x, int y, json& j) {
+	int move = 7;
+	bool found = false;
+	//Implementasi movetosafety
+	string s = d.IsAroundSafe();
+	//Jika tidak ada safe zone di sekitar
+	if (s == "0000") {
+		int i = d.GetX(), k = d.GetY();
+		while (k < (int)mapY(j) && !found && block(j, i, k + 1, Entity) == "null" && !haveBomb(j,i,k+1))
+		{
+			if (d.IsAroundSafe(i, (k + 1)) != "0000") {
+				found = true;
+				move = 4;
+			}
+			else
+				k++;
+		}
+		while (k > 0 && !found && block(j, i, k - 1, Entity) == "null" && !haveBomb(j, i, k - 1))
+		{
+			if (d.IsAroundSafe(i, (k - 1)) != "0000") {
+				found = true;
+				move = 1;
+			}
+			else
+				k--;
+		}
+		while (i < (int)mapX(j) && !found && block(j, i + 1, k, Entity) == "null" && !haveBomb(j, i+1, k))
+		{
+			if (d.IsAroundSafe((i + 1), k) != "0000") {
+				found = true;
+				move = 3;
+			}
+			else
+				i++;
+		}
+		while (i > 0 && !found && block(j, i - 1, k, Entity) == "null" && !haveBomb(j, i-1, k))
+		{
+			if (d.IsAroundSafe((i - 1), k) != "0000") {
+				found = true;
+				move = 2;
+			}
+			else
+				i--;
+		}
+	}
+	else {
+		int i = 0;
+		while (i < 4 && !found)
+		{
+			if (s[i] == '1') {
+				move = i + 1;
+				found = true;
+			}
+			else
+				i++;
 		}
 	}
 	return move;

@@ -131,20 +131,20 @@ bool Detect::IsEntity(int _x, int _y)
 string Detect::IsAroundSafe()
 {
 	string out = "0000";
-	out[0] = IsSafe(x, y - 1) ? ((block(j, x, y - 1, Entity) == "null") ? 1 : 0) : 0;
-	out[1] = IsSafe(x - 1, y) ? ((block(j, x - 1, y, Entity) == "null") ? 1 : 0) : 0;
-	out[2] = IsSafe(x + 1, y) ? ((block(j, x + 1, y, Entity) == "null") ? 1 : 0) : 0;
-	out[3] = IsSafe(x, y + 1) ? ((block(j, x, y + 1, Entity) == "null") ? 1 : 0) : 0;
+	out[0] = (IsSafe(x, y - 1) && (block(j, x, y - 1, Entity) == "null")) ? '1' : '0';
+	out[1] = (IsSafe(x - 1, y) && (block(j, x - 1, y, Entity) == "null")) ? '1' : '0';
+	out[2] = (IsSafe(x + 1, y) && (block(j, x + 1, y, Entity) == "null")) ? '1' : '0';
+	out[3] = (IsSafe(x, y + 1) && (block(j, x, y + 1, Entity) == "null")) ? '1' : '0';
 	return out;
 }
 
 string Detect::IsAroundSafe(int _x,int _y)
 {
 	string out = "0000";
-	out[0] = IsSafe(_x, _y - 1) ? ((block(j, _x, _y - 1, Entity) == "null" )? 1 : 0) : 0;
-	out[1] = IsSafe(_x - 1, _y) ? ((block(j, _x - 1, _y, Entity) == "null" )? 1 : 0) : 0;
-	out[2] = IsSafe(_x + 1, _y) ? ((block(j, _x + 1, _y, Entity) == "null" )? 1 : 0) : 0;
-	out[3] = IsSafe(_x, _y + 1) ? ((block(j, _x, _y + 1, Entity) == "null" )? 1 : 0) : 0;
+	out[0] = (IsSafe(_x, _y - 1)&& (block(j, _x, _y - 1, Entity) == "null")) ? '1' : '0';
+	out[1] = (IsSafe(_x - 1, _y)&& (block(j, _x - 1, _y, Entity) == "null")) ? '1' : '0';
+	out[2] = (IsSafe(_x + 1, _y) && (block(j, _x + 1, _y, Entity) == "null")) ? '1' : '0';
+	out[3] = (IsSafe(_x, _y + 1) && (block(j, _x, _y + 1, Entity) == "null")) ? '1' : '0';
 	return out;
 }
 
