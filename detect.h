@@ -49,6 +49,7 @@ public:
 	*/
 	std::string IsAroundSafe();
 
+	std::string IsAroundSafe(int _x, int _y);
 	/*!
 	@brief this will tell id there is any destructible adjacent to the player
 	@return true or false

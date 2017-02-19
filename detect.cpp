@@ -17,20 +17,22 @@ Detect::Detect(std::string key, nlohmann::json _j,int n) {
 	e = new EntityID[size];
 	int idx = 0;
 	for (i = -n; i <= n; i++) {
-		for (int k = -n + abs(i); k < n - abs(i); k++) {
-			if (((x + i) > 1) && ((x + i) < mapX(j)) && ((y + k) > 1) && ((x + i) < mapY(j))) {
-				if (haveBomb(j, i, k)) {
+		for (int k = -n + abs(i); k <= n - abs(i); k++) {
+			if (((x + i) > 1) && ((x + i) < mapX(j)) && ((y + k) > 1) && ((y + k) < mapY(j))) {
+				if (haveBomb(j,x+i-1,y+k-1)) {
 					string id = Bomb;
-					int radius = bRadius(j, i, k);
+					int radius = bRadius(j, x+i-1, y+k-1);
 					e[idx].Set(id, x + i, y + k,radius);
 				}
 				else {
-					string id = (block(j, x + i, y + k, Entity) != "null") ?
-						block(j, i, k, Entity) : block(j, i, k, PowerUp);
-					e[idx].Set(id, x + i, y + k);
+					string id = (block(j, x + i - 1, y + k - 1, Entity) != "null") ?
+						block(j, x+i-1, y+k-1, Entity) : block(j, x+i-1, y+k-1, PowerUp);
+					e[idx].Set("Bomb", x + i, y + k);
 				}
+				idx++;
 			}
-			idx++;
+			
+			
 		}
 	}
 	detectionRadius = n;
@@ -122,6 +124,16 @@ string Detect::IsAroundSafe()
 	out[1] = IsSafe(x - 1, y) ? 1 : 0;
 	out[2] = IsSafe(x + 1, y) ? 1 : 0;
 	out[3] = IsSafe(x, y - 1) ? 1 : 0;
+	return out;
+}
+
+string Detect::IsAroundSafe(int _x,int _y)
+{
+	string out = "0000";
+	out[0] = IsSafe(_x, _y + 1) ? 1 : 0;
+	out[1] = IsSafe(_x - 1, _y) ? 1 : 0;
+	out[2] = IsSafe(_x + 1, _y) ? 1 : 0;
+	out[3] = IsSafe(_x, _y - 1) ? 1 : 0;
 	return out;
 }
 
