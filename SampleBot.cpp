@@ -56,6 +56,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			move = Strategy(d, target.GetX(), target.GetY(), j);
 	}
 	writeMoveFile(filePath,move);
+	
 	return 0;
 }
 
@@ -143,6 +144,24 @@ int Strategy(Detect d, int x, int y, json& j) {
 				}
 			}
 		
+	}
+
+	string s = d.IsAroundSafe();
+	switch (move) {
+	case 1:
+		if (s[0] == '0') move = 6;
+		break;
+	case 2:
+		if (s[1] == '0') move = 6;
+		break;
+	case 3:
+		if (s[2] == '0') move = 6;
+		break;
+	case 4:
+		if (s[3] == '0') move = 6;
+		break;
+	default:
+		;
 	}
 	return move;
 }
