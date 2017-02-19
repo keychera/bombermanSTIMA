@@ -51,10 +51,10 @@ bool Detect::IsSafe()
 		bool RightSafe = false, LeftSafe = false, UpSafe = false, DownSafe = false;
 		while (i < detectionArea) {
 			if ((e[i].GetID() == IndestructibleWall) || (e[i].GetID() == DestructibleWall)) {
-				RightSafe |= ((e[i].GetX() - x) - 1 == 0);
-				LeftSafe |= ((e[i].GetX() - x) + 1 == 0);
-				UpSafe |= ((e[i].GetY() - y) - 1 == 0);
-				DownSafe |= ((e[i].GetY() - y) + 1 == 0);
+				RightSafe |= ((e[i].GetX() - x) - 1 == 0 && e[i].GetY() == y);
+				LeftSafe |= ((e[i].GetX() - x) + 1 == 0 && e[i].GetY() == y);
+				UpSafe |= ((e[i].GetY() - y) + 1 == 0 && e[i].GetX() == x);
+				DownSafe |= ((e[i].GetY() - y) - 1 == 0 && e[i].GetX() == x);
 			}
 			i++;
 		}
@@ -92,10 +92,10 @@ bool Detect::IsSafe(int _x, int _y)
 		bool RightSafe = false, LeftSafe = false, UpSafe = false, DownSafe = false;
 		while (i < detectionArea) {
 			if ((e[i].GetID() == IndestructibleWall) || (e[i].GetID() == DestructibleWall)) {
-				RightSafe |= ((e[i].GetX() - _x) - 1 == 0);
-				LeftSafe |= ((e[i].GetX() - _x) + 1 == 0);
-				UpSafe |= ((e[i].GetY() - _y) - 1 == 0);
-				DownSafe |= ((e[i].GetY() - _y) + 1 == 0);
+				RightSafe |= ((e[i].GetX() - _x) - 1 == 0 && e[i].GetY() == _y);
+				LeftSafe |= ((e[i].GetX() - _x) + 1 == 0 && e[i].GetY() == _y);
+				UpSafe |= ((e[i].GetY() - _y) + 1 == 0 && e[i].GetX() == _x);
+				DownSafe |= ((e[i].GetY() - _y) - 1 == 0 && e[i].GetX() == _x);
 			}
 			i++;
 		}

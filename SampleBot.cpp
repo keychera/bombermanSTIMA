@@ -197,12 +197,13 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 		while (i < 4 && !found)
 		{
 			if (s[i] == '1') {
-				move = i + 1;
+				move =  i+1;
 				found = true;
 			}
 			else
 				i++;
 		}
+
 	}
 	return move;
 }
