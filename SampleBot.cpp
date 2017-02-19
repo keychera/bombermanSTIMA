@@ -46,6 +46,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Detect d(PlayerKey, j,5);
 	EntityID target = strategize(d, j);
+
+	cout << "target = " << target.GetID() << "x,y = " << target.GetX() << "," << target.GetY() << std::endl;
+
 	if (target.GetID() != "null") {
 		if (target.GetID() == Bomb)
 			move = 5;
@@ -239,8 +242,8 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 
 EntityID strategize(Detect & d,json & j)
 {
-	int xCenter = mapX(j) / 2;
-	int yCenter = mapY(j) / 2;
+	int xCenter = ((mapX(j) + 1)/ 2);
+	int yCenter = ((mapY(j) + 1)/ 2);
 	EntityID eOut("Center", xCenter, yCenter);	
 	if (d.IsSafe()) {
 		if (d.IsDestructibleAdjacent()) {

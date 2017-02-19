@@ -174,7 +174,7 @@ EntityID Detect::IsSuperPowerUpAround()
 	bool found = false;
 	while ((!found) && (i < detectionArea)) {
 		found = (e[i].GetID() == SuperPowerup);
-		i++;
+		if(!found) i++;
 	}
 	EntityID eOut;
 	if (found) eOut = e[i];
@@ -187,7 +187,7 @@ EntityID Detect::IsPowerUpAround()
 	double minDist = 9999.0f;
 	for (i = 0; i < detectionArea;i++) {
 		if ((e[i].GetID() == BagPowerup) || (e[i].GetID() == RadiusPowerup)) {
-			if (DistanceFromHere(e[i]) < minDist) {
+			if (DistanceFromHere(e[i]) <= minDist) {
 				minDist = DistanceFromHere(e[i]);
 				chosen = i;
 			}
@@ -204,7 +204,7 @@ EntityID Detect::IsDestructibleAround()
 	double minDist = 9999.0f;
 	for (i = 0; i < detectionArea;i++) {
 		if (e[i].GetID() == DestructibleWall) {
-			if (DistanceFromHere(e[i]) < minDist) {
+			if (DistanceFromHere(e[i]) <= minDist) {
 				minDist = DistanceFromHere(e[i]);
 				chosen = i;
 			}
