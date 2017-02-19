@@ -21,7 +21,7 @@
 */
 #define SuperPowerup "Domain.Entities.PowerUps.SuperPowerUp, Domain"
 #define BagPowerup "Domain.Entities.PowerUps.BombBagPowerUpEntity, Domain"
-#define RadiusPowerup "Domain.Entities.PowerUps.BombBagPowerUpEntity, Domain"
+#define RadiusPowerup "Domain.Entities.PowerUps.BombRaduisPowerUpEntity, Domain"
 
 /*	AVAILABLE PLAYER COMMAND
 	j: variable json

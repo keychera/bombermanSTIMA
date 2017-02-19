@@ -194,8 +194,10 @@ EntityID Detect::IsPowerUpAround()
 		}
 	}
 	EntityID eOut;
-	if (chosen != -1) eOut = e[chosen];
-	return eOut;
+	if (chosen != -1)
+		return e[chosen];
+	else
+		return eOut;
 }
 
 EntityID Detect::IsDestructibleAround()
@@ -211,8 +213,10 @@ EntityID Detect::IsDestructibleAround()
 		}
 	}
 	EntityID eOut;
-	if (chosen != -1) eOut = e[chosen];
-	return eOut;
+	if (chosen != -1)
+		return e[chosen];
+	else
+		return eOut;
 }
 
 double Detect::DistanceFromHere(EntityID e)
