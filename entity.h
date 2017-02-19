@@ -40,12 +40,24 @@ public:
 	*/
 	void Set(std::string n, int _x, int _y,int r);
 
+	/*!
+	@brief getter of string id
+	*/
 	std::string GetID();
 
+	/*!
+	@brief getter of x value
+	*/
 	int GetX();
 
+	/*!
+	@brief getter of y value
+	*/
 	int GetY();
 
+	/*!
+	@brief getter of BombRadius value
+	*/
 	int GetRadius();
 
 private:
@@ -55,4 +67,4 @@ private:
 	int BombRadius;
 };
 
-#endif // !
+#endif

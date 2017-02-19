@@ -7,9 +7,11 @@ using namespace std;
 
 void readStateFile(string filePath, json& j);
 void writeMoveFile(string filePath, int move);
-int Strategy(Detect d,int x, int y,json& j);
-int MoveToSafety(Detect d, int x, int y, json& j);
+
 EntityID strategize(Detect &d, json & j);
+int MoveCloserTo(Detect d,int x, int y,json& j);
+int MoveToSafety(Detect d, int x, int y, json& j);
+
 
 /* json tester
 int main() {
@@ -32,7 +34,7 @@ int main() {
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int move;
+	//Operation for Game Engine Data Retrieving Purposes
 	string filePath = argv[2];
 
 	cout << "Args: " << argc << std::endl;
@@ -44,13 +46,18 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	string PlayerKey = argv[1];
 
+	//Initialize detection area, the Solution Set
 	int radius = (5 + (Round(j) / 80));
-
 	Detect d(PlayerKey, j,radius);
+
+	//Select target to approach, the Selection Function
 	EntityID target = strategize(d, j);
 
-	cout << "target = " << target.GetID() << "x,y = " << target.GetX() << "," << target.GetY() << std::endl;
+		//Debugging Purposes
+		cout << "target = " << target.GetID() << "x,y = " << target.GetX() << "," << target.GetY() << std::endl;
 
+	//determine move based on given target or situation, the Objective Function
+	int move = 7;
 	if (target.GetID() != "null") {
 		if (target.GetID() == Bomb)
 			move = 5;
@@ -58,13 +65,16 @@ int _tmain(int argc, _TCHAR* argv[])
 			//move = 1;
 			move = MoveToSafety(d,target.GetX(),target.GetY(),j);
 		else
-			move = Strategy(d, target.GetX(), target.GetY(), j);
+			move = MoveCloserTo(d, target.GetX(), target.GetY(), j);
 	}
+	//Writing Operation to pass move to the Game Engine
 	writeMoveFile(filePath,move);
 	
 	return 0;
 }
-
+/*!
+@brief modified reading operation for game engine
+*/
 void readStateFile(string filePath,json& j)
 {
 	cout << "Reading state file " << filePath + "/" + "state.json" << std::endl;
@@ -77,6 +87,9 @@ void readStateFile(string filePath,json& j)
 	}
 }
 
+/*!
+@brief modified writing operation for game engine
+*/
 void writeMoveFile(string filePath,int move)
 {
 	cout << "Writing move file " << filePath + "/" + "move.txt" << std::endl;
@@ -89,7 +102,12 @@ void writeMoveFile(string filePath,int move)
 	}
 }
 
-int Strategy(Detect d, int x, int y, json& j) {
+/*!
+@brief to determine what movement command to issue that leads player closer to given target
+it moving closer leads to dangerous area, trigger bomb command is issued instead
+@return game command number
+*/
+int MoveCloserTo(Detect d, int x, int y, json& j) {
 	/* Return move comamnd
 	GAME COMMAND
 	MoveUp = 1,
@@ -154,7 +172,7 @@ int Strategy(Detect d, int x, int y, json& j) {
 			}
 		
 	}
-
+	//untuk mengecek apakah move command membawa player ke daerah radius bomb
 	string s = d.IsAroundSafe();
 	switch (move) {
 	case 1:
@@ -175,6 +193,11 @@ int Strategy(Detect d, int x, int y, json& j) {
 	return move;
 }
 
+
+/*!
+@brief to determine what movement command to issue that can leads the player outside the dangerous zone
+@return game command number
+*/
 int MoveToSafety(Detect d, int x, int y, json& j) {
 	int move = 7;
 	bool found = false;
@@ -242,6 +265,19 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 	return move;
 }
 
+/*!
+@brief the function that select what target to approach if the player is in the safe zone
+or to issue a danger warning to call MoveToSafety
+@return a EntityID contains either target location or Situation code
+	id = "Bomb"			-> PlaceBomb
+	id = "MoveToSafety" -> MoveToSafety()
+	id = "Center"		-> target the center of the map
+	id = SuperPowerUp	-> target the SuperPowerUp
+	id = BombBagPowerUp	-> target the nearest BombBagPowerUp	
+	id = RadiusPowerUp	-> target the nearest RadiusPowerUp	
+	id = DestructibleWall	-> target the nearest Destructible Wall
+	note : the keywords without enclosing " " are the keywords defined in jsonreader.h
+*/
 EntityID strategize(Detect & d,json & j)
 {
 	int xCenter = ((mapX(j) + 1)/ 2);

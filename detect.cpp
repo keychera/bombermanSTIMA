@@ -123,11 +123,6 @@ bool Detect::IsSafe(int _x, int _y)
 	return safe;
 }
 
-bool Detect::IsEntity(int _x, int _y)
-{
-	return (block(j, _x, _y, Entity) != "null");
-}
-
 string Detect::IsAroundSafe()
 {
 	string out = "0000";
@@ -158,13 +153,6 @@ bool Detect::IsDestructibleAdjacent()
 		}
 		if (!yes) i++;
 	}
-	return yes;
-}
-
-bool Detect::IsEscapePossible()
-{
-	bool yes = false;
-	int i = -1, k = -1;
 	return yes;
 }
 
@@ -225,8 +213,7 @@ double Detect::DistanceFromHere(EntityID e)
 	return sqrt((e.GetX() - x)*(e.GetX() - x) + (e.GetY() - y)*(e.GetY() - y));
 }
 
-
-
 int Detect::GetX() { return x; }
+
 int Detect::GetY() { return y; }
 

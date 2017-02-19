@@ -34,8 +34,6 @@ public:
 	*/
 	bool IsSafe(int _x, int _y);
 
-	bool IsEntity(int _x, int _y);
-
 	/*!
 	@brief this will check if tiles around the player is a safe place to move
 	@return string of 4 character to mark which direction is safe
@@ -44,11 +42,24 @@ public:
 		2nd char = left
 		3rd char = right
 		4th char = down
-	example 1011 -> left is the only direction that is not safe
-	it will marked 1 if there is no possible move in one direction(marked safe)
+	example 1011 -> up, right, down are the possible move that is also safe
+	it will marked 0 if there is no possible move in one direction(marked safe)
 	*/
 	std::string IsAroundSafe();
+
+	/*!
+	@brief this will check if tiles around the the input location x,y is a safe place to move
+	@return string of 4 character to mark which direction is safe
+	string format
+	1st char = up
+	2nd char = left
+	3rd char = right
+	4th char = down
+	example 1011 -> up, right, down are the possible move that is also safe
+	it will marked 0 if there is no possible move in one direction(marked safe)
+	*/
 	std::string IsAroundSafe(int _x, int _y);
+
 	/*!
 	@brief this will tell id there is any destructible adjacent to the player
 	@return true or false
@@ -56,22 +67,40 @@ public:
 	bool IsDestructibleAdjacent();
 
 	/*!
-	@brief this will tell if there is any escape if the player put the bomb
-	@return true or false
-	if false, it will erase destructible in the entity list
+	@brief this will search SuperPowerUp in the detection area
+	@return an Entity containing the location of the SuperPowerUp if found,
+	an EntityID with id "null" if not
 	*/
-	bool IsEscapePossible();
-
 	EntityID IsSuperPowerUpAround();
 
+	/*!
+	@brief this will search the closest PowerUp (RadiusPowerUp or BombBagPowerUp) in the detection area
+	@return an Entity containing the location of the PowerUp if found,
+	an EntityID with id "null" if not
+	*/
 	EntityID IsPowerUpAround();
-
+	
+	/*!
+	@brief this will search the closest Destructible Wall in the detection area
+	@return an Entity containing the location of the Destructible Wall if found,
+	an EntityID with id "null" if not
+	*/
 	EntityID IsDestructibleAround();
 
+	/*!
+	@brief this will calculate the distance from player location to input EntityID
+	@return the double value of the distance
+	*/
 	double DistanceFromHere(EntityID in);
 
+	/*!
+	@brief getter of x value, which represent the x location of the center of detection area
+	*/
 	int GetX();
 
+	/*!
+	@brief getter of y value, which represent the y location of the center of detection area
+	*/
 	int GetY();
 
 

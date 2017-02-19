@@ -33,9 +33,6 @@
     <ClInclude Include="detect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="strategize.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
