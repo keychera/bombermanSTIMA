@@ -105,42 +105,46 @@ int Strategy(Detect d, int x, int y, json& j) {
 	//Add strategy lain di atas ini
 		//Jalankan kode di bawah jika disekitar player tidak ada entity atau indestructiblewall
 		if (abs(dX) > abs(dY)) {
-			if (block(j, (d.GetX() + (dX / abs(dX)) ), d.GetY() , Entity) != IndestructibleWall) {
-				if (dX > 0) {
+			if (block(j, (d.GetX() + (dX / abs(dX))), d.GetY() , Entity) != IndestructibleWall) {
+				if (dX > 0) 
 					move = 3; //MoveRight
-				}
-				else {
-					if (dX < 0)
-						move = 2; //MoveLeft
-				}
-			}
-			else {
+				else		
+					move = 2; //MoveLeft
+			} else if (dY == 0){
+				if (block(j, d.GetX(), (d.GetY() + 1), Entity) != IndestructibleWall)
+					move = 4;
+				else
+					move = 1;
+
+			} else {
 				if (dY > 0) {
 					move = 4; //MoveDown
 				}
-				else {
-					if (dY < 0)
-						move = 1;  //MoveUp
+				else if (dY < 0) {
+					move = 1; //MoveUp
 				}
 			}
+			
 		}
 		else {
-			if (block(j, d.GetX() , (d.GetY() + (dY / abs(dY) )), Entity) != IndestructibleWall) {
-				if (dY > 0) {
+			if (block(j, d.GetX() , (d.GetY() + (dY / abs(dY))), Entity) != IndestructibleWall) {
+				if (dY > 0)
 					move = 4; //MoveDown
-				}
-				else {
-					if (dY < 0)
-						move = 1; //MoveUp
-				}
+				else 
+					move = 1; //MoveUp
+			}
+			else if (dX == 0){
+				if (block(j, d.GetX() + 1, d.GetY(), Entity) != IndestructibleWall)
+					move = 3;
+				else
+					move = 2;
 			}
 			else {
 				if (dX > 0) {
 					move = 3; //MoveRight
 				}
-				else {
-					if (dX < 0)
-						move = 2; //MoveLeft
+				else if (dX < 0){
+					move = 2; //MoveLeft
 				}
 			}
 		
