@@ -147,7 +147,7 @@ bool Detect::IsDestructibleAdjacent()
 	int i = 0;
 	while((!yes)&&(i < detectionArea)) {
 		if (e[i].GetID() == DestructibleWall) {
-			yes = (DistanceFromHere(e[i]) == 1.0f);
+			yes = (DistanceFromHere(e[i]) == 1.0);
 		}
 		if (!yes) i++;
 	}

@@ -103,7 +103,7 @@ int Strategy(Detect d, int x, int y, json& j) {
 		string s = d.IsAroundSafe();
 		//Jika tidak ada safe zone di sekitar
 		if (s == "0000") {
-			int i = d.GetX() - 1, k = d.GetY() - 1;
+			int i = d.GetX() , k = d.GetY() ;
 			bool found = false;
 			while (i < (int)mapY(j) && !found && block(j, i, k + 1, Entity) == "null")
 			{
@@ -158,7 +158,7 @@ int Strategy(Detect d, int x, int y, json& j) {
 		//Add strategy lain di atas ini
 		//Jalankan kode di bawah jika disekitar player tidak ada entity atau indestructiblewall
 		if (abs(dX) > abs(dY)) {
-			if (block(j, (d.GetX() + (dX / abs(dX)) - 1), d.GetY() - 1, Entity) != IndestructibleWall) {
+			if (block(j, (d.GetX() + (dX / abs(dX)) ), d.GetY() , Entity) != IndestructibleWall) {
 				if (dX > 0) {
 					move = 3; //MoveRight
 				}
@@ -178,7 +178,7 @@ int Strategy(Detect d, int x, int y, json& j) {
 			}
 		}
 		else {
-			if (block(j, d.GetX() - 1, (d.GetY() + (dY / abs(dY) - 1)), Entity) != IndestructibleWall) {
+			if (block(j, d.GetX() , (d.GetY() + (dY / abs(dY) )), Entity) != IndestructibleWall) {
 				if (dY > 0) {
 					move = 4; //MoveDown
 				}
