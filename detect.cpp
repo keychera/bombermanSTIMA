@@ -12,27 +12,25 @@ Detect::Detect(std::string key, nlohmann::json _j,int n) {
 	radius = player(j, i, BombRadius).get<int>();
 	bag = player(j, i, BombBag).get<int>();
 	//int n = mapX(j) / 2;
-	int size = (n*n + ((n - 1)*(n - 1)));
+	int size = (n*n + ((n + 1)*(n + 1)));
 	detectionArea = size;
 	e = new EntityID[size];
 	int idx = 0;
 	for (i = -n; i <= n; i++) {
 		for (int k = -n + abs(i); k <= n - abs(i); k++) {
 			if (((x + i) > 1) && ((x + i) < mapX(j)) && ((y + k) > 1) && ((y + k) < mapY(j))) {
-				if (haveBomb(j,x+i-1,y+k-1)) {
+				if (haveBomb(j,x+i,y+k)) {
 					string id = Bomb;
-					int radius = bRadius(j, x+i-1, y+k-1);
+					int radius = bRadius(j, x+i, y+k);
 					e[idx].Set(id, x + i, y + k,radius);
 				}
 				else {
-					string id = (block(j, x + i - 1, y + k - 1, Entity) != "null") ?
-						block(j, x+i-1, y+k-1, Entity) : block(j, x+i-1, y+k-1, PowerUp);
+					string id = (block(j, x + i, y + k, Entity) != "null") ?
+						block(j, x+i, y+k, Entity) : block(j, x+i, y+k, PowerUp);
 					e[idx].Set("Bomb", x + i, y + k);
 				}
 				idx++;
 			}
-			
-			
 		}
 	}
 	detectionRadius = n;
@@ -45,35 +43,41 @@ Detect::~Detect()
 
 bool Detect::IsSafe()
 {
-	bool safe = true;
-	
-	//to the right
-	int i = 0;
-	bool VerticalSafe = false, HorizontalSafe = false;
-	while (i < detectionArea) {
-		if (e[i].GetID() == IndestructibleWall) {
-			HorizontalSafe = ((abs(e[i].GetX() - x) - 1 )== 0);
-			VerticalSafe = ((abs(e[i].GetY() - y) - 1) == 0);
-		}
-		i++;
-	}
+	bool safe;
 
-	i = 0;
-	while ((safe) && (i < detectionArea)) {
-		if (e[i].GetID() == Bomb) {
-			if (!VerticalSafe)
-				if (e[i].GetX() == x) {
-					safe = !(abs(e[i].GetY() - y) < e[i].GetRadius());
-				}
-			if (safe)
-				if (!HorizontalSafe)
-					if (e[i].GetY() == y){
-						safe = !(abs(e[i].GetX() - x) < e[i].GetRadius());
+	if (!haveBomb(j, x, y)) {
+		safe = true;
+		int i = 0;
+		bool RightSafe = false, LeftSafe = false, UpSafe = false, DownSafe = false;
+		while (i < detectionArea) {
+			if ((e[i].GetID() == IndestructibleWall) || (e[i].GetID() == DestructibleWall)) {
+				RightSafe |= ((e[i].GetX() - x) - 1 == 0);
+				LeftSafe |= ((e[i].GetX() - x) + 1 == 0);
+				UpSafe |= ((e[i].GetY() - y) - 1 == 0);
+				DownSafe |= ((e[i].GetY() - y) + 1 == 0);
+			}
+			i++;
+		}
+		bool VerticalSafe = UpSafe && DownSafe, HorizontalSafe = RightSafe && LeftSafe;
+		i = 0;
+		while ((safe) && (i < detectionArea)) {
+			if (e[i].GetID() == Bomb) {
+				if (!VerticalSafe)
+					if (e[i].GetX() == x) {
+						safe = !(abs(e[i].GetY() - y) < e[i].GetRadius());
 					}
+				if (safe)
+					if (!HorizontalSafe)
+						if (e[i].GetY() == y) {
+							safe = !(abs(e[i].GetX() - x) < e[i].GetRadius());
+						}
+			}
+			if (safe) i++;
 		}
-		if (safe) i++;
 	}
-
+	else {
+		safe = false;
+	}
 	return safe;
 
 }

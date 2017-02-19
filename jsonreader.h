@@ -56,9 +56,9 @@
 	i: koordinat X
 	k: koordinat Y
 */
-#define haveBomb(j,i,k)	((j)["GameBlocks"][i][k]["Bomb"].is_null() ? false : true)
-#define bRadius(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombRadius"].get<int>() : -1)
-#define bTimer(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][i][k]["Bomb"]["BombTimer"].get<int>() : -1)
+#define haveBomb(j,i,k)	((j)["GameBlocks"][(i-1)][(k-1)]["Bomb"].is_null() ? false : true)
+#define bRadius(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][(i-1)][(k-1)]["Bomb"]["BombRadius"].get<int>() : -1)
+#define bTimer(j,i,k) (haveBomb(j,i,k) ? (j)["GameBlocks"][(i-1)][(k-1)]["Bomb"]["BombTimer"].get<int>() : -1)
 
 /*	GAME BLOCK
 	j : variable json
@@ -68,7 +68,7 @@
 	Entity	- Tipe entity pada block (lihat daftar tipe), jika tidak ada entity nilainya "null"
 	PowerUp	- Tipe powerup pada block, jika tidak ada power up nilainya "null"
 */
-#define block(j,i,k,...) (!(j)["GameBlocks"][i][k][#__VA_ARGS__].is_null() ? (j)["GameBlocks"][i][k][#__VA_ARGS__]["$type"].get<std::string>() : "null")
+#define block(j,i,k,...) (!(j)["GameBlocks"][(i-1)][(k-1)][#__VA_ARGS__].is_null() ? (j)["GameBlocks"][(i-1)][(k-1)][#__VA_ARGS__]["$type"].get<std::string>() : "null")
 
 #endif
 

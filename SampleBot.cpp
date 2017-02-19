@@ -47,7 +47,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	Detect d(PlayerKey, j,5);
 	EntityID target = strategize(d, j);
 	if (target.GetID() != "null") {
-		move = Strategy(d, 11, 11, j);
+		if (target.GetID() == Bomb)
+			move = 5;
+		else
+			move = Strategy(d, target.GetX(), target.GetY(), j);
 	}
 	writeMoveFile(filePath,move);
 	return 0;
@@ -203,8 +206,7 @@ EntityID strategize(Detect & d,json & j)
 	int xCenter = mapX(j) / 2;
 	int yCenter = mapY(j) / 2;
 	EntityID eOut("Center", xCenter, yCenter);	
-	/*if (d.IsSafe()) {
-		string mark = d.IsAroundSafe();
+	if (d.IsSafe()) {
 		if (d.IsDestructibleAdjacent()) {
 			eOut.Set("Bomb", 0, 0);
 		}
@@ -220,9 +222,8 @@ EntityID strategize(Detect & d,json & j)
 				}
 			}
 		}
-	*/
-	//} else {
-		//eOut.Set("MoveToSafety", xCenter, 0);
-	//}
+	} else {
+		eOut.Set("MoveToSafety", xCenter, yCenter);
+	}
 	return eOut;
 }
