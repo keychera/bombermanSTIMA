@@ -50,8 +50,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		if (target.GetID() == Bomb)
 			move = 5;
 		else if (target.GetID() == "MoveToSafety")
-			move = 1;
-			//move = MoveToSafety(d,target.GetX(),target.GetY(),j);
+			//move = 1;
+			move = MoveToSafety(d,target.GetX(),target.GetY(),j);
 		else
 			move = Strategy(d, target.GetX(), target.GetY(), j);
 	}

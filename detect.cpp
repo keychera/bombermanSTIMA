@@ -64,12 +64,12 @@ bool Detect::IsSafe()
 			if (e[i].GetID() == Bomb) {
 				if (!VerticalSafe)
 					if (e[i].GetX() == x) {
-						safe = !(abs(e[i].GetY() - y) < e[i].GetRadius());
+						safe = !(abs(e[i].GetY() - y) <= e[i].GetRadius());
 					}
 				if (safe)
 					if (!HorizontalSafe)
 						if (e[i].GetY() == y) {
-							safe = !(abs(e[i].GetX() - x) < e[i].GetRadius());
+							safe = !(abs(e[i].GetX() - x) <= e[i].GetRadius());
 						}
 			}
 			if (safe) i++;
@@ -105,12 +105,12 @@ bool Detect::IsSafe(int _x, int _y)
 			if (e[i].GetID() == Bomb) {
 				if (!VerticalSafe)
 					if (e[i].GetX() == _x) {
-						safe = !(abs(e[i].GetY() - _y) < e[i].GetRadius());
+						safe = !(abs(e[i].GetY() - _y) <= e[i].GetRadius());
 					}
 				if (safe)
 					if (!HorizontalSafe)
 						if (e[i].GetY() == _y) {
-							safe = !(abs(e[i].GetX() - _x) < e[i].GetRadius());
+							safe = !(abs(e[i].GetX() - _x) <= e[i].GetRadius());
 						}
 			}
 			if (safe) i++;
