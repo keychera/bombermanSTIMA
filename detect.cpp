@@ -27,7 +27,7 @@ Detect::Detect(std::string key, nlohmann::json _j,int n) {
 				else {
 					string id = (block(j, x + i, y + k, Entity) != "null") ?
 						block(j, x+i, y+k, Entity) : block(j, x+i, y+k, PowerUp);
-					e[idx].Set("Bomb", x + i, y + k);
+					e[idx].Set(id, x + i, y + k);
 				}
 				idx++;
 			}
