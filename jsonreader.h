@@ -4,6 +4,8 @@
 
 #include "json.hpp"
 
+#define Round(j) (j)["CurrentRound"].get<int>()
+
 /*	TIPE ENTITY
 	IndestructibleWall - Wall yang tidak bisa dihancurkan '#'
 	DestructibleWall - Wall yang bisa hancur '+'

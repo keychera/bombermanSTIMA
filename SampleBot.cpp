@@ -44,7 +44,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	string PlayerKey = argv[1];
 
-	Detect d(PlayerKey, j,5);
+	int radius = (5 + (Round(j) / 80));
+
+	Detect d(PlayerKey, j,radius);
 	EntityID target = strategize(d, j);
 
 	cout << "target = " << target.GetID() << "x,y = " << target.GetX() << "," << target.GetY() << std::endl;
