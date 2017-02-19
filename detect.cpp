@@ -198,6 +198,7 @@ EntityID Detect::IsPowerUpAround()
 		return e[chosen];
 	else
 		return eOut;
+
 }
 
 EntityID Detect::IsDestructibleAround()

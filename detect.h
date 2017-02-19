@@ -48,7 +48,6 @@ public:
 	it will marked 1 if there is no possible move in one direction(marked safe)
 	*/
 	std::string IsAroundSafe();
-
 	std::string IsAroundSafe(int _x, int _y);
 	/*!
 	@brief this will tell id there is any destructible adjacent to the player
