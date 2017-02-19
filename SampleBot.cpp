@@ -178,7 +178,7 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 	//Jika tidak ada safe zone di sekitar
 	if (s == "0000") {
 		int i = d.GetX(), k = d.GetY();
-		while (k < (int)mapY(j) && !found && block(j, i, k + 1, Entity) == "null" && !haveBomb(j,i,k+1))
+		while (k < (int)mapY(j) && !found && block(j, i, (k + 1), Entity) == "null" && !haveBomb(j,i,k+1))
 		{
 			if (d.IsAroundSafe(i, (k + 1)) != "0000") {
 				found = true;
@@ -187,6 +187,8 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 			else
 				k++;
 		}
+		i = d.GetX();
+		k = d.GetY();
 		while (k > 0 && !found && block(j, i, k - 1, Entity) == "null" && !haveBomb(j, i, k - 1))
 		{
 			if (d.IsAroundSafe(i, (k - 1)) != "0000") {
@@ -196,7 +198,9 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 			else
 				k--;
 		}
-		while (i < (int)mapX(j) && !found && block(j, i + 1, k, Entity) == "null" && !haveBomb(j, i+1, k))
+		i = d.GetX();
+		k = d.GetY();
+		while (i < (int)mapX(j) && !found && block(j, (i + 1), k, Entity) == "null" && !haveBomb(j, i+1, k))
 		{
 			if (d.IsAroundSafe((i + 1), k) != "0000") {
 				found = true;
@@ -205,7 +209,9 @@ int MoveToSafety(Detect d, int x, int y, json& j) {
 			else
 				i++;
 		}
-		while (i > 0 && !found && block(j, i - 1, k, Entity) == "null" && !haveBomb(j, i-1, k))
+		i = d.GetX();
+		k = d.GetY();
+		while (i > 0 && !found && block(j, (i - 1), k, Entity) == "null" && !haveBomb(j, i-1, k))
 		{
 			if (d.IsAroundSafe((i - 1), k) != "0000") {
 				found = true;
