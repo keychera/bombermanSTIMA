@@ -86,31 +86,38 @@ bool Detect::IsSafe(int _x, int _y)
 {
 	bool safe = true;
 
-	//to the right
-	int i = 0;
-	bool VerticalSafe = false, HorizontalSafe = false;
-	while (i < detectionArea) {
-		if (e[i].GetID() == IndestructibleWall) {
-			HorizontalSafe = ((abs(e[i].GetX() -_x) - 1) == 0);
-			VerticalSafe = ((abs(e[i].GetY() - _y) - 1) == 0);
+	if (!haveBomb(j, _x, _y)) {
+		safe = true;
+		int i = 0;
+		bool RightSafe = false, LeftSafe = false, UpSafe = false, DownSafe = false;
+		while (i < detectionArea) {
+			if ((e[i].GetID() == IndestructibleWall) || (e[i].GetID() == DestructibleWall)) {
+				RightSafe |= ((e[i].GetX() - _x) - 1 == 0);
+				LeftSafe |= ((e[i].GetX() - _x) + 1 == 0);
+				UpSafe |= ((e[i].GetY() - _y) - 1 == 0);
+				DownSafe |= ((e[i].GetY() - _y) + 1 == 0);
+			}
+			i++;
 		}
-		i++;
-	}
-
-	i = 0;
-	while ((safe) && (i < detectionArea)) {
-		if (e[i].GetID() == Bomb) {
-			if (!VerticalSafe)
-				if (e[i].GetX() == _x) {
-					safe = !(abs(e[i].GetY() - _y) < e[i].GetRadius());
-				}
-			if (safe)
-				if (!HorizontalSafe)
-					if (e[i].GetY() == _y) {
-						safe = !(abs(e[i].GetX() - _x) < e[i].GetRadius());
+		bool VerticalSafe = UpSafe && DownSafe, HorizontalSafe = RightSafe && LeftSafe;
+		i = 0;
+		while ((safe) && (i < detectionArea)) {
+			if (e[i].GetID() == Bomb) {
+				if (!VerticalSafe)
+					if (e[i].GetX() == _x) {
+						safe = !(abs(e[i].GetY() - _y) < e[i].GetRadius());
 					}
+				if (safe)
+					if (!HorizontalSafe)
+						if (e[i].GetY() == _y) {
+							safe = !(abs(e[i].GetX() - _x) < e[i].GetRadius());
+						}
+			}
+			if (safe) i++;
 		}
-		if (safe) i++;
+	}
+	else {
+		safe = false;
 	}
 
 	return safe;

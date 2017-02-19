@@ -45,7 +45,7 @@ public:
 		3rd char = right
 		4th char = down
 	example 1011 -> left is the only direction that is not safe
-	it will marked 0 if there is no possible move in one direction
+	it will marked 1 if there is no possible move in one direction(marked safe)
 	*/
 	std::string IsAroundSafe();
 
